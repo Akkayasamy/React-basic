@@ -1,7 +1,7 @@
 export default function Sidebar() {
   return (
     <div style={styles.sidebar}>
-      <h3>Sidebar</h3>
+      <h3 style={{ textAlign: "center" }}>Sidebar</h3>
     </div>
   );
 }
@@ -14,7 +14,6 @@ const styles = {
     color: "#fff",
     position: "fixed",
     left: 0,
-    top: 0,
-    padding: 20,
+    top: 0
   },
 };
