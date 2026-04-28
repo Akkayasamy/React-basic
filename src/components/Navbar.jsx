@@ -62,7 +62,7 @@ export default function Navbar() {
           </svg>
         </div>
         <span style={{ color: theme.textWhite, fontWeight: 800, fontSize: 16, letterSpacing: "-0.03em" }}>
-          Remarkable
+          Project Management
         </span>
       </div>
 
