@@ -1,9 +1,6 @@
 const stats = [
   {
-    label: "Total Revenue",
-    value: "$48,295",
-    change: "+12.5%",
-    up: true,
+    label: "Total Revenue", value: "$48,295", change: "+12.5%", up: true,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -14,26 +11,19 @@ const stats = [
     color: "#6366f1", bg: "rgba(99,102,241,0.1)",
   },
   {
-    label: "Active Users",
-    value: "3,842",
-    change: "+8.1%",
-    up: true,
+    label: "Active Users", value: "3,842", change: "+8.1%", up: true,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
         <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
       </svg>
     ),
     color: "#10b981", bg: "rgba(16,185,129,0.1)",
   },
   {
-    label: "New Projects",
-    value: "128",
-    change: "-3.2%",
-    up: false,
+    label: "New Projects", value: "128", change: "-3.2%", up: false,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -43,10 +33,7 @@ const stats = [
     color: "#f59e0b", bg: "rgba(245,158,11,0.1)",
   },
   {
-    label: "Uptime",
-    value: "99.9%",
-    change: "+0.1%",
-    up: true,
+    label: "Uptime", value: "99.9%", change: "+0.1%", up: true,
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -74,26 +61,20 @@ const projects = [
 
 export default function Dashboard() {
   return (
-    <div style={{
-      padding: "2rem",
-      background: "#f8fafc",
-      minHeight: "100vh",
-    }}>
+    <div style={{ padding: "2rem", background: "#f8fafc", minHeight: "100vh" }}>
 
       {/* Page header */}
       <div style={{ marginBottom: "1.75rem" }}>
         <h1 style={{
-          fontSize: "1.5rem", fontWeight: 700,
-          color: "#0f172a", margin: 0, letterSpacing: "-0.02em",
-        }}>
-          Overview
-        </h1>
+          fontSize: "1.5rem", fontWeight: 700, color: "#0f172a",
+          margin: 0, letterSpacing: "-0.02em",
+        }}>Overview</h1>
         <p style={{ fontSize: 13, color: "#94a3b8", marginTop: 4 }}>
           Here's what's happening with your projects today.
         </p>
       </div>
 
-      {/* Stats grid */}
+      {/* Stats */}
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
@@ -101,10 +82,8 @@ export default function Dashboard() {
       }}>
         {stats.map((stat) => (
           <div key={stat.label} style={{
-            background: "#fff",
-            borderRadius: 12,
-            padding: "1.25rem",
-            border: "1px solid #f1f5f9",
+            background: "#fff", borderRadius: 12,
+            padding: "1.25rem", border: "1px solid #f1f5f9",
             boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -136,23 +115,17 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Bottom two columns */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: 16,
-      }}>
+      {/* Bottom row */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
 
         {/* Recent Activity */}
         <div style={{
           background: "#fff", borderRadius: 12,
           border: "1px solid #f1f5f9",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-          overflow: "hidden",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.04)", overflow: "hidden",
         }}>
           <div style={{
-            padding: "1.1rem 1.25rem",
-            borderBottom: "1px solid #f1f5f9",
+            padding: "1.1rem 1.25rem", borderBottom: "1px solid #f1f5f9",
             display: "flex", justifyContent: "space-between", alignItems: "center",
           }}>
             <h2 style={{ fontSize: 14, fontWeight: 600, color: "#0f172a", margin: 0 }}>
@@ -163,24 +136,19 @@ export default function Dashboard() {
               border: "none", cursor: "pointer", fontWeight: 500,
             }}>View all</button>
           </div>
-
           <div style={{ padding: "0.5rem 0" }}>
             {recentActivity.map((item, i) => (
               <div key={i} style={{
                 display: "flex", alignItems: "center", gap: 12,
                 padding: "0.7rem 1.25rem",
-                borderBottom: i < recentActivity.length - 1
-                  ? "1px solid #f8fafc" : "none",
+                borderBottom: i < recentActivity.length - 1 ? "1px solid #f8fafc" : "none",
               }}>
                 <div style={{
                   width: 34, height: 34, borderRadius: "50%",
-                  background: item.color + "20",
-                  color: item.color,
+                  background: item.color + "20", color: item.color,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: 11, fontWeight: 700, flexShrink: 0,
-                }}>
-                  {item.avatar}
-                </div>
+                }}>{item.avatar}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <p style={{ fontSize: 13, fontWeight: 500, color: "#1e293b", margin: 0 }}>
                     {item.user}
@@ -188,13 +156,9 @@ export default function Dashboard() {
                   <p style={{
                     fontSize: 12, color: "#94a3b8", margin: 0,
                     whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-                  }}>
-                    {item.action}
-                  </p>
+                  }}>{item.action}</p>
                 </div>
-                <span style={{ fontSize: 11, color: "#cbd5e1", flexShrink: 0 }}>
-                  {item.time}
-                </span>
+                <span style={{ fontSize: 11, color: "#cbd5e1", flexShrink: 0 }}>{item.time}</span>
               </div>
             ))}
           </div>
@@ -204,23 +168,18 @@ export default function Dashboard() {
         <div style={{
           background: "#fff", borderRadius: 12,
           border: "1px solid #f1f5f9",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-          overflow: "hidden",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.04)", overflow: "hidden",
         }}>
           <div style={{
-            padding: "1.1rem 1.25rem",
-            borderBottom: "1px solid #f1f5f9",
+            padding: "1.1rem 1.25rem", borderBottom: "1px solid #f1f5f9",
             display: "flex", justifyContent: "space-between", alignItems: "center",
           }}>
-            <h2 style={{ fontSize: 14, fontWeight: 600, color: "#0f172a", margin: 0 }}>
-              Projects
-            </h2>
+            <h2 style={{ fontSize: 14, fontWeight: 600, color: "#0f172a", margin: 0 }}>Projects</h2>
             <button style={{
               fontSize: 12, color: "#6366f1", background: "none",
               border: "none", cursor: "pointer", fontWeight: 500,
             }}>View all</button>
           </div>
-
           <div style={{ padding: "0.75rem 1.25rem", display: "flex", flexDirection: "column", gap: 18 }}>
             {projects.map((proj) => (
               <div key={proj.name}>
@@ -236,22 +195,17 @@ export default function Dashboard() {
                       {proj.status}
                     </p>
                   </div>
-                  <span style={{
-                    fontSize: 12, fontWeight: 600, color: proj.color,
-                  }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: proj.color }}>
                     {proj.progress}%
                   </span>
                 </div>
-                {/* Progress bar */}
                 <div style={{
                   height: 6, background: "#f1f5f9",
                   borderRadius: 99, overflow: "hidden",
                 }}>
                   <div style={{
-                    height: "100%",
-                    width: `${proj.progress}%`,
-                    background: proj.color,
-                    borderRadius: 99,
+                    height: "100%", width: `${proj.progress}%`,
+                    background: proj.color, borderRadius: 99,
                     transition: "width 0.4s ease",
                   }} />
                 </div>
@@ -259,7 +213,6 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
-
       </div>
     </div>
   );

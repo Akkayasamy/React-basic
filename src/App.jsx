@@ -5,8 +5,12 @@ import "./App.css";
 import { getToken } from "./utils/auth";
 import AuthPage from "./pages/AuthPage";
 import Dashboard from "./pages/Dashboard";
-import Sidebar from "./components/Sidebar";
-import Header from "./components/Header";
+import Navbar from "./components/Navbar";
+import ProjectsPage from "./pages/ProjectsPage";
+import MilestonesPage from "./pages/MilestonesPage";
+import TasksPage from "./pages/TasksPage";
+import SubtasksPage from "./pages/SubtasksPage";
+import TimesheetsPage from "./pages/TimesheetsPage";
 
 function App() {
   const token = getToken();
@@ -15,13 +19,11 @@ function App() {
   return (
     <BrowserRouter>
       <ToastContainer position="top-right" autoClose={3000} />
-      {isAuth && <Sidebar />}
-      {isAuth && <Header />}
+      {isAuth && <Navbar />}
 
       <div
         style={{
-          marginLeft: isAuth ? 200 : 0,
-          paddingTop: isAuth ? 60 : 0,
+          paddingTop: isAuth ? 64 : 0,
           flex: 1,
           minHeight: 0,
           display: "flex",
@@ -36,6 +38,26 @@ function App() {
           <Route
             path="/dashboard"
             element={isAuth ? <Dashboard /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/projects"
+            element={isAuth ? <ProjectsPage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/milestones"
+            element={isAuth ? <MilestonesPage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/tasks"
+            element={isAuth ? <TasksPage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/subtasks"
+            element={isAuth ? <SubtasksPage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/timesheets"
+            element={isAuth ? <TimesheetsPage /> : <Navigate to="/" />}
           />
         </Routes>
       </div>
