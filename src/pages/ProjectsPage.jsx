@@ -41,28 +41,33 @@ export default function ProjectsPage() {
     <div style={{ padding: "2rem", background: "#f8fafc", minHeight: "100vh" }}>
 
       {/* HEADER */}
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1.75rem" }}>
-        <div>
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 700 }}>Projects</h1>
-          <p style={{ fontSize: 13, color: "#94a3b8" }}>Manage all your projects</p>
-        </div>
+   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.75rem" }}>
+  <div>
+    <h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: 0 }}>Projects</h1>
+    <p style={{ fontSize: 13, color: "#94a3b8", margin: "4px 0 0 0" }}>Manage all your projects</p>
+  </div>
 
-        <button
-          onClick={openCreate}
-          style={{
-            padding: "0.6rem 1rem",
-            background: "#6366f1",
-            color: "#fff",
-            border: "none",
-            borderRadius: 8,
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          + New Project
-        </button>
-      </div>
+  <button
+    onClick={openCreate}
+    style={{
+      padding: "8px 16px",
+      height: "38px",
+      background: "#6366f1",
+      color: "#fff",
+      border: "none",
+      borderRadius: 8,
+      fontSize: 13,
+      fontWeight: 600,
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
+      whiteSpace: "nowrap",
+    }}
+  >
+    + New Project
+  </button>
+</div>
 
       {/* EMPTY STATE */}
       {projects.length === 0 ? (
