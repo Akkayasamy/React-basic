@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import { ProjectModal } from "../components/ProjectModal";
 import { fetchProjectsAPI } from "../graphql/projectMutations";
-
-const STATUS_COLORS = {
-  active: { bg: "#dcfce7", text: "#166534" },
-  inactive: { bg: "#fee2e2", text: "#991b1b" },
-  pending: { bg: "#fef9c3", text: "#854d0e" },
-};
+import { STATUS_COLORS ,formatStatus} from "../utils/formatStatus";
 
 export default function ProjectsPage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -90,8 +85,8 @@ export default function ProjectsPage() {
 
             <tbody>
               {projects.map((p, i) => {
-                const sc = STATUS_COLORS[p.status] || STATUS_COLORS.inactive;
-
+                const statusColors = STATUS_COLORS[p.status] || STATUS_COLORS.todo;
+                
                 return (
                   <tr key={p.id} style={{ background: i % 2 ? "#fafafa" : "#fff" }}>
                     <td style={{ padding: "0.7rem 1rem", fontWeight: 600 }}>{p.title}</td>
@@ -100,27 +95,24 @@ export default function ProjectsPage() {
                     <td style={{ padding: "0.7rem 1rem" }}>
                       <span
                         style={{
-                          background: sc.bg,
-                          color: sc.text,
-                          padding: "2px 10px",
+                          background: statusColors.bg,
+                          color: statusColors.text,
+                          padding: "4px 12px",
                           borderRadius: 20,
-                          fontSize: 11,
-                          fontWeight: 600,
+                          fontSize: 12,
+                          fontWeight: 500,
+                          display: "inline-block",
                         }}
                       >
-                        {p.status}
+                        {formatStatus(p.status)}
                       </span>
                     </td>
-
                     <td style={{ padding: "0.7rem 1rem" }}>{p.startdate || "—"}</td>
                     <td style={{ padding: "0.7rem 1rem" }}>{p.enddate || "—"}</td>
                     <td style={{ padding: "0.7rem 1rem" }}>{p.budgethours || "—"}</td>
-
-                    {/* FIXED */}
                     <td style={{ padding: "0.7rem 1rem" }}>
                       {p.manager?.name || "—"}
                     </td>
-
                     <td style={{ padding: "0.7rem 1rem" }}>
                       <button
                         onClick={() => openEdit(p)}
@@ -130,7 +122,17 @@ export default function ProjectsPage() {
                           borderRadius: 6,
                           fontSize: 12,
                           color: "#6366f1",
+                          backgroundColor: "white",
                           cursor: "pointer",
+                          transition: "all 0.2s",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = "#f5f3ff";
+                          e.target.style.borderColor = "#6366f1";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "white";
+                          e.target.style.borderColor = "#e2e8f0";
                         }}
                       >
                         Edit

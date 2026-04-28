@@ -37,7 +37,7 @@ export async function saveProject(variables) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // 👈 AUTH ADDED HERE
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       query,
