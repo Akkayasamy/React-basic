@@ -96,8 +96,8 @@ export default function Login() {
         onClick={handleLogin}
         disabled={loading}
         className={`w-full py-3 mt-1 text-white border-none rounded-lg text-sm font-medium tracking-wide transition-colors duration-200 ${loading
-          ? "bg-indigo-500 cursor-not-allowed"
-          : "bg-indigo-950 cursor-pointer hover:bg-indigo-600"
+          ? "bg-sky-300 cursor-not-allowed"
+          : "bg-sky-400 cursor-pointer hover:bg-sky-500"
           }`}
       >
         {loading ? "Signing in..." : "Sign in"}
