@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ProjectModal } from "../components/ProjectModal";
 import { fetchProjectsAPI } from "../graphql/projectMutations";
-import { STATUS_COLORS ,formatStatus} from "../utils/formatStatus";
+import { STATUS_COLORS, formatStatus } from "../utils/formatStatus";
 
 export default function ProjectsPage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -38,50 +38,48 @@ export default function ProjectsPage() {
   }, []);
 
   return (
-    <div style={{ padding: "2rem", background: "#f8fafc", minHeight: "100vh" }}>
+    <div className="p-8 bg-slate-50 min-h-screen">
 
       {/* HEADER */}
-   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.75rem" }}>
-  <div>
-    <h1 style={{ fontSize: "1.5rem", fontWeight: 700, margin: 0 }}>Projects</h1>
-    <p style={{ fontSize: 13, color: "#94a3b8", margin: "4px 0 0 0" }}>Manage all your projects</p>
-  </div>
+      <div className="flex justify-between items-center mb-7">
+        <div>
+          <h1 className="text-2xl font-bold m-0">Projects</h1>
+          <p className="text-[13px] text-slate-400 mt-1">
+            Manage all your projects
+          </p>
+        </div>
 
-  <button
-    onClick={openCreate}
-    style={{
-      padding: "8px 16px",
-      height: "38px",
-      background: "#6366f1",
-      color: "#fff",
-      border: "none",
-      borderRadius: 8,
-      fontSize: 13,
-      fontWeight: 600,
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-      gap: "4px",
-      whiteSpace: "nowrap",
-    }}
-  >
-    + New Project
-  </button>
-</div>
+        <button
+          onClick={openCreate}
+          className="px-4 h-[38px] bg-indigo-500 text-white border-0 rounded-lg text-[13px] font-semibold cursor-pointer flex items-center gap-1 whitespace-nowrap hover:bg-indigo-600 transition"
+        >
+          + New Project
+        </button>
+      </div>
 
       {/* EMPTY STATE */}
       {projects.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "6rem 1rem", color: "#94a3b8" }}>
-          <div style={{ fontSize: 52 }}>📁</div>
-          <p style={{ fontWeight: 600 }}>No projects yet</p>
+        <div className="text-center py-24 px-4 text-slate-400">
+          <div className="text-[52px]">📁</div>
+          <p className="font-semibold">No projects yet</p>
         </div>
       ) : (
-        <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e2e8f0" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+        <div className="bg-white rounded-xl border border-slate-200">
+          <table className="w-full border-collapse text-[13px]">
             <thead>
-              <tr style={{ background: "#f8fafc" }}>
-                {["Title", "Project Name", "Project Code", "Status", "Start", "End", "Budget", "Manager", "Action"].map((h) => (
-                  <th key={h} style={{ padding: "0.7rem 1rem", textAlign: "left" }}>
+              <tr className="bg-slate-50">
+                {[
+                  "Title",
+                  "Project Name",
+                  "Project Code",
+                  "Status",
+                  "Start",
+                  "End",
+                  "Budget",
+                  "Manager",
+                  "Action",
+                ].map((h) => (
+                  <th key={h} className="py-3 px-4 text-left">
                     {h}
                   </th>
                 ))}
@@ -90,55 +88,42 @@ export default function ProjectsPage() {
 
             <tbody>
               {projects.map((p, i) => {
-                const statusColors = STATUS_COLORS[p.status] || STATUS_COLORS.todo;
-                
+                const statusColors =
+                  STATUS_COLORS[p.status] || STATUS_COLORS.todo;
+
                 return (
-                  <tr key={p.id} style={{ background: i % 2 ? "#fafafa" : "#fff" }}>
-                    <td style={{ padding: "0.7rem 1rem", fontWeight: 600 }}>{p.title}</td>
-                    <td style={{ padding: "0.7rem 1rem" }}>{p.projectname}</td>
-                    <td style={{ padding: "0.7rem 1rem" }}>{p.projectcode}</td>
-                    <td style={{ padding: "0.7rem 1rem" }}>
+                  <tr
+                    key={p.id}
+                    className={i % 2 ? "bg-[#fafafa]" : "bg-white"}
+                  >
+                    <td className="py-3 px-4 font-semibold">{p.title}</td>
+                    <td className="py-3 px-4">{p.projectname}</td>
+                    <td className="py-3 px-4">{p.projectcode}</td>
+
+                    <td className="py-3 px-4">
                       <span
+                        className="px-3 py-1 rounded-full text-xs font-medium inline-block"
                         style={{
                           background: statusColors.bg,
                           color: statusColors.text,
-                          padding: "4px 12px",
-                          borderRadius: 20,
-                          fontSize: 12,
-                          fontWeight: 500,
-                          display: "inline-block",
                         }}
                       >
                         {formatStatus(p.status)}
                       </span>
                     </td>
-                    <td style={{ padding: "0.7rem 1rem" }}>{p?.startdate || "—"}</td>
-                    <td style={{ padding: "0.7rem 1rem" }}>{p?.enddate || "—"}</td>
-                    <td style={{ padding: "0.7rem 1rem" }}>{p?.budgethours || "—"}</td>
-                    <td style={{ padding: "0.7rem 1rem" }}>
+
+                    <td className="py-3 px-4">{p?.startdate || "—"}</td>
+                    <td className="py-3 px-4">{p?.enddate || "—"}</td>
+                    <td className="py-3 px-4">{p?.budgethours || "—"}</td>
+
+                    <td className="py-3 px-4">
                       {formatStatus(p?.manager?.name) || "—"}
                     </td>
-                    <td style={{ padding: "0.7rem 1rem" }}>
+
+                    <td className="py-3 px-4">
                       <button
                         onClick={() => openEdit(p)}
-                        style={{
-                          border: "1px solid #e2e8f0",
-                          padding: "3px 10px",
-                          borderRadius: 6,
-                          fontSize: 12,
-                          color: "#6366f1",
-                          backgroundColor: "white",
-                          cursor: "pointer",
-                          transition: "all 0.2s",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.backgroundColor = "#f5f3ff";
-                          e.target.style.borderColor = "#6366f1";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.backgroundColor = "white";
-                          e.target.style.borderColor = "#e2e8f0";
-                        }}
+                        className="border border-slate-200 px-2.5 py-1 rounded-md text-xs text-indigo-500 bg-white cursor-pointer transition hover:bg-violet-50 hover:border-indigo-500"
                       >
                         Edit
                       </button>

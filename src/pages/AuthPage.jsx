@@ -1,102 +1,47 @@
 import { useState } from "react";
 import Login from "./Login";
 import Register from "./Register";
+import logo from "../assets/logo.png"; // <-- add your image here
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login");
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flex: 1,
-        minHeight: "100vh",
-      }}
-    >
+    <div className="flex min-h-screen">
+
       {/* ── LEFT PANEL ── */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-          overflow: "hidden",
-          padding: "2.5rem",
-          background:
-            "linear-gradient(145deg, #0f172a 0%, #1e1b4b 60%, #312e81 100%)",
-        }}
-      >
+      <div className="flex-1 flex flex-col items-center justify-center relative overflow-hidden p-10 bg-[linear-gradient(145deg,#0f172a_0%,#1e1b4b_60%,#312e81_100%)]">
+
         {/* Glow blobs */}
-        <div
-          style={{
-            position: "absolute",
-            top: -40,
-            left: -40,
-            width: 220,
-            height: 220,
-            borderRadius: "50%",
-            background: "rgba(99,102,241,0.15)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: -30,
-            right: -30,
-            width: 180,
-            height: 180,
-            borderRadius: "50%",
-            background: "rgba(79,70,229,0.12)",
-          }}
-        />
+        <div className="absolute -top-10 -left-10 w-[220px] h-[220px] rounded-full bg-indigo-500/15" />
+        <div className="absolute -bottom-8 -right-8 w-[180px] h-[180px] rounded-full bg-indigo-600/10" />
 
         {/* Content */}
-        <div style={{ position: "relative", zIndex: 1, textAlign: "center" }}>
-          {/* Icon box */}
-
+        <div className="relative z-10 text-center">
+          {/* LOGO CENTER */}
+          <img
+            src={logo}
+            alt="logo"
+            className="w-32 h-auto mx-auto"
+          />
         </div>
       </div>
 
       {/* ── RIGHT PANEL ── */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          background: "#fff",
-        }}
-      >
-        {/* Top nav links */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: "1.5rem",
-            padding: "1.25rem 2rem",
-            borderBottom: "1px solid #f3f4f6",
-          }}
-        >
+      <div className="flex-1 flex flex-col bg-white">
+
+        {/* Top nav */}
+        <div className="flex justify-end gap-6 px-8 py-5 border-b border-gray-100">
           {["login", "register"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontSize: 14,
-                fontWeight: 500,
-                textTransform: "capitalize",
-                paddingBottom: 2,
-                color: activeTab === tab ? "#4f46e5" : "#9ca3af",
-                borderBottom:
+              className={`text-sm font-medium capitalize pb-[2px] transition
+                ${
                   activeTab === tab
-                    ? "2px solid #4f46e5"
-                    : "2px solid transparent",
-                transition: "all 0.15s",
-              }}
+                    ? "text-indigo-600 border-b-2 border-indigo-600"
+                    : "text-gray-400 border-b-2 border-transparent"
+                }`}
             >
               {tab}
             </button>
@@ -104,60 +49,26 @@ export default function AuthPage() {
         </div>
 
         {/* Form area */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "2rem",
-          }}
-        >
-          <div style={{ width: "100%", maxWidth: 340 }}>
+        <div className="flex-1 flex items-center justify-center p-8">
+          <div className="w-full max-w-[340px]">
+
             {activeTab === "login" ? (
               <>
-                <p
-                  style={{
-                    fontSize: 11,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    color: "#9ca3af",
-                    marginBottom: 6,
-                  }}
-                >
+                <p className="text-[11px] tracking-widest uppercase text-gray-400 mb-1">
                   Welcome back
                 </p>
-                <h3
-                  style={{
-                    fontSize: "1.6rem",
-                    fontWeight: 400,
-                    color: "#111827",
-                    margin: "0 0 1.75rem",
-                    fontFamily: "Georgia, serif",
-                  }}
-                >
+
+                <h3 className="text-[1.6rem] font-normal text-gray-900 mb-7 font-serif">
                   Sign in
                 </h3>
+
                 <Login setActiveTab={setActiveTab} />
-                <p
-                  style={{
-                    textAlign: "center",
-                    marginTop: "1.25rem",
-                    fontSize: 13,
-                    color: "#9ca3af",
-                  }}
-                >
+
+                <p className="text-center mt-5 text-[13px] text-gray-400">
                   No account?{" "}
                   <button
                     onClick={() => setActiveTab("register")}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "#4f46e5",
-                      fontWeight: 500,
-                      fontSize: 13,
-                    }}
+                    className="text-indigo-600 font-medium text-[13px]"
                   >
                     Register →
                   </button>
@@ -165,54 +76,28 @@ export default function AuthPage() {
               </>
             ) : (
               <>
-                <p
-                  style={{
-                    fontSize: 11,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    color: "#9ca3af",
-                    marginBottom: 6,
-                  }}
-                >
+                <p className="text-[11px] tracking-widest uppercase text-gray-400 mb-1">
                   Get started
                 </p>
-                <h3
-                  style={{
-                    fontSize: "1.6rem",
-                    fontWeight: 400,
-                    color: "#111827",
-                    margin: "0 0 1.75rem",
-                    fontFamily: "Georgia, serif",
-                  }}
-                >
+
+                <h3 className="text-[1.6rem] font-normal text-gray-900 mb-7 font-serif">
                   Create account
                 </h3>
+
                 <Register setActiveTab={setActiveTab} />
-                <p
-                  style={{
-                    textAlign: "center",
-                    marginTop: "1.25rem",
-                    fontSize: 13,
-                    color: "#9ca3af",
-                  }}
-                >
+
+                <p className="text-center mt-5 text-[13px] text-gray-400">
                   Have an account?{" "}
                   <button
                     onClick={() => setActiveTab("login")}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "#4f46e5",
-                      fontWeight: 500,
-                      fontSize: 13,
-                    }}
+                    className="text-indigo-600 font-medium text-[13px]"
                   >
                     Sign in →
                   </button>
                 </p>
               </>
             )}
+
           </div>
         </div>
       </div>
