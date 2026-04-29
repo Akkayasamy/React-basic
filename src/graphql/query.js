@@ -38,7 +38,7 @@ export const GET_MANAGERS = gql`
 `;
 
 
-export const CREATE_MILESTONE =gql `
+export const CREATE_MILESTONE = gql`
   mutation createMilestone(
     $id: Int,
     $title: String,
@@ -104,7 +104,7 @@ export const GET_MILESTONES = gql`
 `;
 
 
-export const GET_ALL_PROJECTS= gql`
+export const GET_ALL_PROJECTS = gql`
           query GetAllProjects($search: String, $currentPage: Int) {
             getAllProjects(search: $search, currentPage: $currentPage) {
               status
@@ -131,4 +131,76 @@ export const GET_ALL_PROJECTS= gql`
               }
             }
           }
-        `
+        `;
+
+
+export const GET_TASKS = gql`
+  query getTasks($page: Int, $search: String) {
+    getTasks(page: $page, search: $search) {
+      status
+      errorMessage
+      totalCount
+      currentPage
+      totalPages
+      results {
+        id
+        taskCode
+        title
+        taskName
+        status
+        priority
+        project {
+          projectname
+        }
+        assignee {
+          first_name
+        }
+        milestone {
+          milestoneName
+        }
+      }
+    }
+  }
+`;
+
+export const SAVE_TASK = gql`
+  mutation createTask(
+    $id: Int
+    $title: String
+    $taskName: String
+    $projectId: Int
+    $milestoneId: Int
+    $assignedTo: String
+    $startDate: String
+    $dueDate: String
+    $priority: String
+    $status: String
+  ) {
+    createTask(
+      id: $id
+      title: $title
+      taskName: $taskName
+      projectId: $projectId
+      milestoneId: $milestoneId
+      assignedTo: $assignedTo
+      startDate: $startDate
+      dueDate: $dueDate
+      priority: $priority
+      status: $status
+    ) {
+      status
+      errorMessage
+    }
+  }
+`;
+
+export const GET_MILESTONES_BY_PROJECT = gql`
+  query getMilestones($projectId: Int) {
+    getMilestones(projectId: $projectId) {
+      results {
+        id
+        milestoneName
+      }
+    }
+  }
+`;

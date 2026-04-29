@@ -42,7 +42,6 @@ export function MilestoneModal({ isOpen, onClose, editData, onSuccess }) {
   const { data: projects = [], loading: loadingProjects } = useProjects();
   const { data: managers = [], loading: loadingManagers } = useManagers();
   const { data: users = [], loading: loadingUsers } = useGetAllUsers();
-console.log(users,'users')
 
   useEffect(() => {
     if (editData) {
