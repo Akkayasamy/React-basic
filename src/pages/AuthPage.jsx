@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Login from "./Login";
 import Register from "./Register";
-import logo from "../assets/logo.png"; // <-- add your image here
+import logo from "../assets/logo.png";
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login");

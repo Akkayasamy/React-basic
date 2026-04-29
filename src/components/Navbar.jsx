@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { removeToken } from "../utils/auth";
 import { useUser } from "../context/UserContext";
+import logo from "../assets/logo.png";
 
 const navItems = [
   {
@@ -47,10 +48,12 @@ export default function Navbar() {
         onClick={() => navigate("/dashboard")}
         className="flex items-center gap-[9px] mr-8 cursor-pointer shrink-0"
       >
-        <div className="w-[34px] h-[34px] rounded-[10px] bg-gradient-to-br from-violet-600 to-purple-700 flex items-center justify-center shadow-[0_0_12px_rgba(124,58,237,0.5)]">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
-          </svg>
+        <div className="w-[30px] h-[30px] rounded-[10px] bg-white flex items-center justify-center shadow-[0_0_12px_rgba(124,58,237,0.5)]">
+           <img
+                      src={logo}
+                      alt="logo"
+                      className="w-32 h-auto mx-auto"
+                    />
         </div>
         <span className="text-white font-extrabold text-base tracking-tight">
           Project Management
@@ -84,7 +87,7 @@ export default function Navbar() {
       <div className="flex items-center gap-2.5 shrink-0">
 
         {/* Search */}
-        <div className="flex items-center gap-[7px] bg-white/[0.08] border border-white/10 rounded-md px-3 py-[7px]">
+        {/* <div className="flex items-center gap-[7px] bg-white/[0.08] border border-white/10 rounded-md px-3 py-[7px]">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
@@ -92,7 +95,7 @@ export default function Navbar() {
             placeholder="Search..."
             className="border-none outline-none bg-transparent text-[13px] text-white/70 w-[120px]"
           />
-        </div>
+        </div> */}
 
         {/* Avatar */}
         <div className="relative">
