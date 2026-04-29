@@ -112,11 +112,11 @@ export default function ProjectsPage() {
                         {formatStatus(p.status)}
                       </span>
                     </td>
-                    <td style={{ padding: "0.7rem 1rem" }}>{p.startdate || "—"}</td>
-                    <td style={{ padding: "0.7rem 1rem" }}>{p.enddate || "—"}</td>
-                    <td style={{ padding: "0.7rem 1rem" }}>{p.budgethours || "—"}</td>
+                    <td style={{ padding: "0.7rem 1rem" }}>{p?.startdate || "—"}</td>
+                    <td style={{ padding: "0.7rem 1rem" }}>{p?.enddate || "—"}</td>
+                    <td style={{ padding: "0.7rem 1rem" }}>{p?.budgethours || "—"}</td>
                     <td style={{ padding: "0.7rem 1rem" }}>
-                      {p.manager?.name || "—"}
+                      {formatStatus(p?.manager?.name) || "—"}
                     </td>
                     <td style={{ padding: "0.7rem 1rem" }}>
                       <button

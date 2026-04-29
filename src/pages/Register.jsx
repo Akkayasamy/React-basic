@@ -3,27 +3,18 @@ import { authService } from "../services/authService";
 import { setToken } from "../utils/auth";
 import { toast } from "react-toastify";
 
-const inputStyle = {
-  width: "100%",
-  padding: "0.65rem 0.875rem",
-  border: "1.5px solid #e5e7eb",
-  borderRadius: 8,
-  fontSize: 14,
-  outline: "none",
-  fontFamily: "inherit",
-  background: "#fff",
-  color: "#111827",
-  transition: "border-color 0.2s",
-  display: "block",
-};
+const EyeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+  </svg>
+);
 
-const labelStyle = {
-  display: "block",
-  fontSize: 12,
-  color: "#6b7280",
-  marginBottom: 6,
-  letterSpacing: "0.02em",
-};
+const EyeOffIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.97 9.97 0 012.084-3.411M6.53 6.53A9.97 9.97 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.97 9.97 0 01-1.347 2.617M6.53 6.53L3 3m3.53 3.53l11.94 11.94M9.88 9.88a3 3 0 104.24 4.24" />
+  </svg>
+);
 
 export default function Register({ setActiveTab }) {
   const [form, setForm] = useState({
@@ -31,6 +22,11 @@ export default function Register({ setActiveTab }) {
     lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
+  });
+  const [show, setShow] = useState({
+    password: false,
+    confirmPassword: false,
   });
   const [loading, setLoading] = useState(false);
 
@@ -38,11 +34,31 @@ export default function Register({ setActiveTab }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const toggleShow = (field) => {
+    setShow((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
+
   const handleRegister = async () => {
-    if (!form.firstName || !form.lastName || !form.email || !form.password) {
-      toast.error("Please fill in all fields");
+    const fields = [
+      { key: "firstName", label: "First name" },
+      { key: "lastName", label: "Last name" },
+      { key: "email", label: "Email address" },
+      { key: "password", label: "Password" },
+      { key: "confirmPassword", label: "Confirm password" },
+    ];
+
+    for (const field of fields) {
+      if (!form[field.key]) {
+    toast.error(`${field.label} is required to continue.`);
+        return;
+      }
+    }
+
+    if (form.password !== form.confirmPassword) {
+      toast.error("Passwords do not match");
       return;
     }
+
     try {
       setLoading(true);
       const res = await authService.register(
@@ -63,89 +79,115 @@ export default function Register({ setActiveTab }) {
     }
   };
 
+  const inputClass =
+    "block w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm bg-white text-gray-900 outline-none transition-colors duration-200 focus:border-indigo-600 pr-10";
+
+  const inputErrorClass =
+    "block w-full px-3.5 py-2.5 border border-red-400 rounded-lg text-sm bg-white text-gray-900 outline-none transition-colors duration-200 focus:border-red-500 pr-10";
+
+  const labelClass = "block text-xs text-gray-500 mb-1.5 tracking-wide";
+
+  const passwordMismatch =
+    form.confirmPassword.length > 0 && form.password !== form.confirmPassword;
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+    <div className="flex flex-col gap-3.5">
+
       {/* First + Last name row */}
-      <div style={{ display: "flex", gap: 12 }}>
-        <div style={{ flex: 1 }}>
-          <label style={labelStyle}>First name</label>
+      <div className="flex gap-3">
+        <div className="flex-1">
+          <label className={labelClass}>First name</label>
           <input
             name="firstName"
             type="text"
             placeholder="John"
             value={form.firstName}
             onChange={handleChange}
-            style={inputStyle}
-            onFocus={(e) => (e.target.style.borderColor = "#4f46e5")}
-            onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
+            className={inputClass}
           />
         </div>
-        <div style={{ flex: 1 }}>
-          <label style={labelStyle}>Last name</label>
+        <div className="flex-1">
+          <label className={labelClass}>Last name</label>
           <input
             name="lastName"
             type="text"
             placeholder="Doe"
             value={form.lastName}
             onChange={handleChange}
-            style={inputStyle}
-            onFocus={(e) => (e.target.style.borderColor = "#4f46e5")}
-            onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
+            className={inputClass}
           />
         </div>
       </div>
 
+      {/* Email */}
       <div>
-        <label style={labelStyle}>Email address</label>
+        <label className={labelClass}>Email address</label>
         <input
           name="email"
           type="email"
           placeholder="you@example.com"
           value={form.email}
           onChange={handleChange}
-          style={inputStyle}
-          onFocus={(e) => (e.target.style.borderColor = "#4f46e5")}
-          onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
+          className={inputClass}
         />
       </div>
 
+      {/* Password */}
       <div>
-        <label style={labelStyle}>Password</label>
-        <input
-          name="password"
-          type="password"
-          placeholder="••••••••"
-          value={form.password}
-          onChange={handleChange}
-          style={inputStyle}
-          onFocus={(e) => (e.target.style.borderColor = "#4f46e5")}
-          onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
-        />
+        <label className={labelClass}>Password</label>
+        <div className="relative">
+          <input
+            name="password"
+            type={show.password ? "text" : "password"}
+            placeholder="••••••••"
+            value={form.password}
+            onChange={handleChange}
+            className={inputClass}
+          />
+          <button
+            type="button"
+            onClick={() => toggleShow("password")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            {show.password ? <EyeOffIcon /> : <EyeIcon />}
+          </button>
+        </div>
       </div>
 
+      {/* Confirm Password */}
+      <div>
+        <label className={labelClass}>Confirm password</label>
+        <div className="relative">
+          <input
+            name="confirmPassword"
+            type={show.confirmPassword ? "text" : "password"}
+            placeholder="••••••••"
+            value={form.confirmPassword}
+            onChange={handleChange}
+            className={passwordMismatch ? inputErrorClass : inputClass}
+          />
+          <button
+            type="button"
+            onClick={() => toggleShow("confirmPassword")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            {show.confirmPassword ? <EyeOffIcon /> : <EyeIcon />}
+          </button>
+        </div>
+        {passwordMismatch && (
+          <p className="text-xs text-red-500 mt-1">Passwords do not match</p>
+        )}
+      </div>
+
+      {/* Submit */}
       <button
         onClick={handleRegister}
         disabled={loading}
-        style={{
-          width: "100%",
-          padding: "0.75rem",
-          background: loading ? "#6366f1" : "#1e1b4b",
-          color: "#fff",
-          border: "none",
-          borderRadius: 8,
-          fontSize: 14,
-          fontWeight: 500,
-          cursor: loading ? "not-allowed" : "pointer",
-          letterSpacing: "0.03em",
-          marginTop: 4,
-          transition: "background 0.2s",
-        }}
-        onMouseOver={(e) => {
-          if (!loading) e.target.style.background = "#4f46e5";
-        }}
-        onMouseOut={(e) => {
-          if (!loading) e.target.style.background = "#1e1b4b";
-        }}
+        className={`w-full py-3 mt-1 text-white border-none rounded-lg text-sm font-medium tracking-wide transition-colors duration-200 ${
+          loading
+            ? "bg-indigo-500 cursor-not-allowed"
+            : "bg-indigo-950 cursor-pointer hover:bg-indigo-600"
+        }`}
       >
         {loading ? "Creating account..." : "Create account"}
       </button>
