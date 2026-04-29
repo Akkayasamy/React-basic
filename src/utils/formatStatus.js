@@ -15,3 +15,9 @@ export const STATUS_COLORS = {
   done: { bg: "#dcfce7", text: "#166534" },
   cancelled: { bg: "#f1f5f9", text: "#64748b" },
 };
+
+
+export const capitalizeFirst = (value = "") => {
+  if (!value) return "";
+  return value?.charAt(0)?.toUpperCase();
+};

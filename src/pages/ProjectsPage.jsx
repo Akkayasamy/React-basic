@@ -51,7 +51,7 @@ export default function ProjectsPage() {
 
         <button
           onClick={openCreate}
-          className="px-4 h-[38px] bg-indigo-500 text-white border-0 rounded-lg text-[13px] font-semibold cursor-pointer flex items-center gap-1 whitespace-nowrap hover:bg-indigo-600 transition"
+          className="px-4 h-[38px] bg-sky-500 text-white border-0 rounded-lg text-[13px] font-semibold cursor-pointer flex items-center gap-1 whitespace-nowrap hover:bg-sky-600 transition"
         >
           + New Project
         </button>
@@ -123,7 +123,7 @@ export default function ProjectsPage() {
                     <td className="py-3 px-4">
                       <button
                         onClick={() => openEdit(p)}
-                        className="border border-slate-200 px-2.5 py-1 rounded-md text-xs text-indigo-500 bg-white cursor-pointer transition hover:bg-violet-50 hover:border-indigo-500"
+                        className="border border-slate-200 px-2.5 py-1 rounded-md text-xs text-sky-500 bg-white cursor-pointer transition hover:bg-violet-50 hover:border-sky-500"
                       >
                         Edit
                       </button>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { removeToken } from "../utils/auth";
+import { capitalizeFirst } from "../utils/formatStatus.js"
 import { useUser } from "../context/UserContext";
 import logo from "../assets/logo.png";
 
@@ -49,13 +50,13 @@ export default function Navbar() {
         className="flex items-center gap-[9px] mr-8 cursor-pointer shrink-0"
       >
         <div className="w-[30px] h-[30px] rounded-[10px] bg-white flex items-center justify-center shadow-[0_0_12px_rgba(124,58,237,0.5)]">
-           <img
-                      src={logo}
-                      alt="logo"
-                      className="w-32 h-auto mx-auto"
-                    />
+          <img
+            src={logo}
+            alt="logo"
+            className="w-32 h-auto mx-auto"
+          />
         </div>
-        <span className="text-white font-extrabold text-base tracking-tight">
+        <span className="text-white font-bold text-base tracking-tight">
           Project Management
         </span>
       </div>
@@ -70,11 +71,11 @@ export default function Navbar() {
               onClick={() => navigate(item.path)}
               className={`flex items-center gap-[7px] px-[14px] py-[7px] rounded-md border-none cursor-pointer text-[13px] whitespace-nowrap shrink-0 transition-all duration-150
                 ${isActive
-                  ? "font-semibold text-white bg-violet-600/35"
+                  ? "font-semibold text-white bg-sky-600/35"
                   : "font-normal text-white/50 bg-transparent hover:bg-white/[0.08] hover:text-white"
                 }`}
             >
-              <span className={isActive ? "text-violet-300" : "text-white/35"}>
+              <span className={isActive ? "text-sky-300" : "text-white/35"}>
                 {item.icon}
               </span>
               {item.label}
@@ -103,8 +104,8 @@ export default function Navbar() {
             onClick={() => setShowMenu(!showMenu)}
             className="flex items-center gap-2 bg-white/[0.08] border border-white/10 rounded-md pl-[6px] pr-[10px] py-[5px] cursor-pointer"
           >
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-600 to-purple-700 flex items-center justify-center text-[11px] font-bold text-white shadow-[0_0_12px_rgba(124,58,237,0.5)]">
-              U
+            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-sky-600 to-sky-700 flex items-center justify-center text-[11px] font-bold text-white">
+              {capitalizeFirst(data?.first_name)}
             </div>
             <span className="text-[13px] font-medium text-white/85">{data?.first_name}</span>
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

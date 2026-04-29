@@ -280,7 +280,7 @@ export function ProjectModal({ isOpen, onClose, editData, onSuccess }) {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer transition-colors shadow-sm"
+            className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer transition-colors shadow-sm"
           >
             {loading ? "Saving..." : isEdit ? "Update Project" : "Create Project"}
           </button>

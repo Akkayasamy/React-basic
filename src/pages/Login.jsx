@@ -51,7 +51,7 @@ export default function Login() {
   };
 
   const inputClass =
-    "block w-full px-3.5 py-2.5 pr-10 border border-gray-200 rounded-lg text-sm bg-white text-gray-900 outline-none transition-colors duration-200 focus:border-indigo-600 focus:ring-0";
+    "block w-full px-3.5 py-2.5 pr-10 border border-gray-200 rounded-lg text-sm bg-white text-gray-900 outline-none transition-colors duration-200 focus:border-sky-600 focus:ring-0";
 
   return (
     <div className="flex flex-col gap-4">
