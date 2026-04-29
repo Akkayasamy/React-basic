@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import { formatStatus } from "../utils/formatStatus";
 import { useProjects } from "../graphql/projectMutations";
 import { useSaveMilestone } from "../graphql/milestoneMutations";
+import { useManagers } from "../graphql/managerQuery.js";
+import { useGetAllUsers } from "../graphql/getUserQuery.js";
 
 const EMPTY_FORM = {
   title: "",
@@ -22,32 +24,35 @@ const STATUS_OPTIONS = [
 ];
 
 const REQUIRED_FIELDS = [
-  { key: "title",          label: "Title" },
-  { key: "milestoneName",  label: "Milestone Name" },
-  { key: "projectId",      label: "Project" },
-  { key: "startDate",      label: "Start Date" },
-  { key: "endDate",        label: "End Date" },
+  { key: "title", label: "Title" },
+  { key: "milestoneName", label: "Milestone Name" },
+  { key: "projectId", label: "Project" },
+  { key: "startDate", label: "Start Date" },
+  { key: "endDate", label: "End Date" },
   { key: "milestoneOwner", label: "Milestone Owner" },
 ];
 
 export function MilestoneModal({ isOpen, onClose, editData, onSuccess }) {
   const isEdit = !!editData;
 
-  const [form, setForm]               = useState(EMPTY_FORM);
+  const [form, setForm] = useState(EMPTY_FORM);
   const [fieldErrors, setFieldErrors] = useState({});
 
   const { saveMilestone, loading } = useSaveMilestone();
   const { data: projects = [], loading: loadingProjects } = useProjects();
+  const { data: managers = [], loading: loadingManagers } = useManagers();
+  const { data: users = [], loading: loadingUsers } = useGetAllUsers();
+console.log(users,'users')
 
   useEffect(() => {
     if (editData) {
       setForm({
-        title:          editData.title          || "",
-        milestoneName:  editData.milestoneName  || "",
-        projectId:      editData.project?.id    || "",
-        startDate:      editData.startDate      || "",
-        endDate:        editData.endDate        || "",
-        status:         editData.status         || "pending",
+        title: editData.title || "",
+        milestoneName: editData.milestoneName || "",
+        projectId: editData.project?.id || "",
+        startDate: editData.startDate || "",
+        endDate: editData.endDate || "",
+        status: editData.status || "pending",
         milestoneOwner: editData.milestoneOwner || "",
       });
     } else {
@@ -89,7 +94,6 @@ export function MilestoneModal({ isOpen, onClose, editData, onSuccess }) {
     const result = await saveMilestone(vars);
 
     if (result?.status == 200) {
-      console.log(result,'result<<<<<<<<')
       toast.success(isEdit ? "Milestone updated!" : "Milestone created!");
       onSuccess?.();
       onClose();
@@ -226,12 +230,22 @@ export function MilestoneModal({ isOpen, onClose, editData, onSuccess }) {
               <label className="block text-[12px] font-semibold text-slate-500 mb-1">
                 Milestone Owner <span className="text-red-500">*</span>
               </label>
-              <input
+              {/* ✅ Changed from text input to manager dropdown */}
+              <select
                 className={inputClass("milestoneOwner")}
                 value={form.milestoneOwner}
                 onChange={field("milestoneOwner")}
-                placeholder="Enter owner name"
-              />
+              >
+                <option value="">
+                  {loadingManagers ? "Loading..." : "Select Owner"}
+                </option>
+                {!loadingManagers &&
+                  users.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.first_name}
+                    </option>
+                  ))}
+              </select>
             </div>
           </div>
         </div>
@@ -251,8 +265,8 @@ export function MilestoneModal({ isOpen, onClose, editData, onSuccess }) {
             {loading
               ? "Saving..."
               : isEdit
-              ? "Update Milestone"
-              : "Create Milestone"}
+                ? "Update Milestone"
+                : "Create Milestone"}
           </button>
         </div>
       </div>

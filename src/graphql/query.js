@@ -12,6 +12,17 @@ query getUser {
   }
 }`;
 
+export const GET_ALL_USERS = gql`
+query getUsers {
+  getUsers {
+  status
+		errorMessage
+		results{
+      id
+			first_name
+		}
+  }
+}`;
 
 export const GET_MANAGERS = gql`
   query GetAllManagers {
@@ -84,6 +95,9 @@ export const GET_MILESTONES = gql`
           projectname
           projectcode
         }
+        owner{
+			  	first_name
+			  }
       }
     }
   }

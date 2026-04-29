@@ -106,7 +106,7 @@ export default function MilestonesPage() {
 
                     <td className="py-3 px-4">{m?.startDate || "—"}</td>
                     <td className="py-3 px-4">{m?.endDate || "—"}</td>
-                    <td className="py-3 px-4">{m?.milestoneOwner || "—"}</td>
+                    <td className="py-3 px-4">{formatStatus(m?.owner?.first_name) || "—"}</td>
 
                     <td className="py-3 px-4">
                       <button
