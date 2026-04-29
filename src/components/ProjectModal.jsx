@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { saveProject } from "../graphql/projectMutations";
-import { fetchManagersAPI } from "../graphql/managerQuery";
 import { formatStatus } from "../utils/formatStatus";
+import { useManagers } from "../graphql/managerQuery.js";
+
 
 const EMPTY_FORM = {
   title: "",
@@ -32,8 +33,7 @@ export function ProjectModal({ isOpen, onClose, editData, onSuccess }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const [managers, setManagers] = useState([]);
-  const [loadingManagers, setLoadingManagers] = useState(false);
+  const { data: managers = [], loading: loadingManagers } = useManagers();
 
   useEffect(() => {
     if (editData) {
@@ -47,28 +47,12 @@ export function ProjectModal({ isOpen, onClose, editData, onSuccess }) {
         project_managerid: editData.project_managerid || "",
         remarks: editData.remarks || "",
       });
-      setSuccess("")
-      setError("")
+      setSuccess("");
+      setError("");
     } else {
       setForm(EMPTY_FORM);
     }
   }, [editData, isOpen]);
-
-  useEffect(() => {
-    const loadManagers = async () => {
-      try {
-        setLoadingManagers(true);
-        const res = await fetchManagersAPI();
-        setManagers(res?.results || []);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoadingManagers(false);
-      }
-    };
-
-    if (isOpen) loadManagers();
-  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -265,7 +249,6 @@ export function ProjectModal({ isOpen, onClose, editData, onSuccess }) {
               </div>
             </div>
 
-            {/* ✅ ONLY CHANGED FIELD (PROJECT MANAGER) */}
             <div style={{ marginTop: 10 }}>
               <label style={labelStyle}>Project Manager</label>
 
@@ -275,17 +258,16 @@ export function ProjectModal({ isOpen, onClose, editData, onSuccess }) {
                 value={form.project_managerid}
                 onChange={field("project_managerid")}
               >
-                <option value="">Select Manager</option>
+                <option value="">
+                  {loadingManagers ? "Loading..." : "Select Manager"}
+                </option>
 
-                {loadingManagers ? (
-                  <option>Loading...</option>
-                ) : (
+                {!loadingManagers &&
                   managers.map((m) => (
                     <option key={m.id} value={m.id}>
                       {m.name}
                     </option>
-                  ))
-                )}
+                  ))}
               </select>
             </div>
 

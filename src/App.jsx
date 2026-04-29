@@ -10,66 +10,71 @@ import SubtasksPage from "./pages/SubtasksPage";
 import TimesheetsPage from "./pages/TimesheetsPage";
 
 import { useAuth } from "./context/AuthContext.";
+import { useUsers } from "./graphql/getUserQuery.js";
+import { UserProvider } from "./context/UserContext.jsx";
 
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 function App() {
   const { isAuth } = useAuth();
+  const { status, data, errorMessage, loading } = useUsers(!isAuth);
 
   return (
-    <BrowserRouter>
-      <ToastContainer position="top-right" autoClose={3000} />
+    <UserProvider value={{ data, loading, status, errorMessage }}>
+      <BrowserRouter>
+        <ToastContainer position="top-right" autoClose={3000} />
 
-      {isAuth && <Navbar />}
+        {isAuth && <Navbar />}
 
-      <div
-        style={{
-          paddingTop: isAuth ? 64 : 0,
-          flex: 1,
-          minHeight: 0,
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Routes>
-          <Route
-            path="/"
-            element={isAuth ? <Navigate to="/dashboard" /> : <AuthPage />}
-          />
+        <div
+          style={{
+            paddingTop: isAuth ? 64 : 0,
+            flex: 1,
+            minHeight: 0,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Routes>
+            <Route
+              path="/"
+              element={isAuth ? <Navigate to="/dashboard" /> : <AuthPage />}
+            />
 
-          <Route
-            path="/dashboard"
-            element={isAuth ? <Dashboard /> : <Navigate to="/" />}
-          />
+            <Route
+              path="/dashboard"
+              element={isAuth ? <Dashboard /> : <Navigate to="/" />}
+            />
 
-          <Route
-            path="/projects"
-            element={isAuth ? <ProjectsPage /> : <Navigate to="/" />}
-          />
+            <Route
+              path="/projects"
+              element={isAuth ? <ProjectsPage /> : <Navigate to="/" />}
+            />
 
-          <Route
-            path="/milestones"
-            element={isAuth ? <MilestonesPage /> : <Navigate to="/" />}
-          />
+            <Route
+              path="/milestones"
+              element={isAuth ? <MilestonesPage /> : <Navigate to="/" />}
+            />
 
-          <Route
-            path="/tasks"
-            element={isAuth ? <TasksPage /> : <Navigate to="/" />}
-          />
+            <Route
+              path="/tasks"
+              element={isAuth ? <TasksPage /> : <Navigate to="/" />}
+            />
 
-          <Route
-            path="/subtasks"
-            element={isAuth ? <SubtasksPage /> : <Navigate to="/" />}
-          />
+            <Route
+              path="/subtasks"
+              element={isAuth ? <SubtasksPage /> : <Navigate to="/" />}
+            />
 
-          <Route
-            path="/timesheets"
-            element={isAuth ? <TimesheetsPage /> : <Navigate to="/" />}
-          />
-        </Routes>
-      </div>
-    </BrowserRouter>
+            <Route
+              path="/timesheets"
+              element={isAuth ? <TimesheetsPage /> : <Navigate to="/" />}
+            />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </UserProvider>
   );
 }
 

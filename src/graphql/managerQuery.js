@@ -1,36 +1,16 @@
+import { useQuery } from "@apollo/client/react";
 import { GQL_ENDPOINT } from "../config";
 import { getToken } from "../utils/auth";
+import { GET_MANAGERS } from "./query";
 
-export const fetchManagersAPI = async () => {
-  try {
-    const token = getToken();
+export const useManagers = () => {
+  const { data, loading, error } = useQuery(GET_MANAGERS);
 
-    const res = await fetch(GQL_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        query: `
-          query GetAllManagers {
-            getAllManagers {
-              status
-              errorMessage
-              results {
-                id
-                name
-              }
-            }
-          }
-        `,
-      }),
-    });
-
-    const json = await res.json();
-    return json?.data?.getAllManagers;
-  } catch (error) {
-    console.error("fetchManagersAPI error:", error);
-    return null;
-  }
+  return {
+    status: data?.getAllManagers?.status,
+    data: data?.getAllManagers?.results,
+    errorMessage: data?.getAllManagers?.errorMessage,
+    loading,
+    error,
+  };
 };
