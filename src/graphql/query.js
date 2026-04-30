@@ -384,3 +384,37 @@ query GetTimesheets(
     }
   }
 }`;
+
+export const GET_DASHBOARD_DATA = gql`
+  query GetDashboardOverview {
+    getDashboardData {
+      status
+      errorMessage
+      stats {
+        totalProjects
+        completedMilestones
+        openTasks
+        totalLoggedHours
+      }
+      projectOverview {
+        status
+        count
+      }
+      recentProjects {
+        id
+        projectname
+        status
+        startdate
+        enddate
+      }
+      myTasks {
+        id
+        title
+        status
+        project {
+          projectname
+        }
+      }
+    }
+  }
+`;
