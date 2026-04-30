@@ -292,3 +292,95 @@ export const SAVE_SUBTASK = gql`
     }
   }
 `;
+
+export const CREATE_TIMESHEET= gql`
+mutation createTimesheet(
+  $id: Int
+  $title: String!
+  $employeeId: String!
+  $taskId: Int!
+  $subtaskId: Int
+  $workDate: String!
+  $hoursWorked: Float!
+  $remarks: String
+  $approvalStatus: String
+) {
+  createTimesheet(
+    id: $id
+    title: $title
+    employeeId: $employeeId
+    taskId: $taskId
+    subtaskId: $subtaskId
+    workDate: $workDate
+    hoursWorked: $hoursWorked
+    remarks: $remarks
+    approvalStatus: $approvalStatus
+  ) {
+    status
+    errorMessage
+  }
+}`;
+
+export const GET_TIMESHEETS = gql`
+query GetTimesheets(
+  $page: Int
+  $search: String
+  $employeeId: Int
+  $projectId: Int
+  $status: String
+) {
+  getTimesheets(
+    page: $page
+    search: $search
+    employeeId: $employeeId
+    projectId: $projectId
+    status: $status
+  ) {
+    status
+    errorMessage
+    totalCount
+    totalPages
+    currentPage
+
+    results {
+      id
+      title
+      workDate
+      hoursWorked
+      remarks
+      approvalStatus
+
+      employee {
+        id
+        first_name
+        last_name
+        email
+      }
+
+      project {
+        id
+        title
+      }
+
+      milestone {
+        id
+        title
+      }
+
+      task {
+        id
+        title
+      }
+
+      subtask {
+        id
+        title
+      }
+
+      approver {
+        id
+        name
+      }
+    }
+  }
+}`;
