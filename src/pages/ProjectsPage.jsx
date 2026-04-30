@@ -7,6 +7,11 @@ export default function ProjectsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
   const [projects, setProjects] = useState([]);
+  
+  // PAGINATION STATES
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const openCreate = () => {
     setEditData(null);
@@ -18,28 +23,32 @@ export default function ProjectsPage() {
     setModalOpen(true);
   };
 
-  const loadProjects = async () => {
-    const data = await fetchProjectsAPI("", 1);
+  const loadProjects = async (page = currentPage) => {
+    setLoading(true);
+    const data = await fetchProjectsAPI("", page);
 
     if (data?.status === 200) {
       setProjects(data.results);
+      setTotalPages(data.totalPages || 1);
+      setCurrentPage(data.currentPage || 1);
     } else {
       console.error(data?.errorMessage || "Failed to load projects");
       setProjects([]);
     }
+    setLoading(false);
   };
 
   const handleSuccess = () => {
-    loadProjects();
+    loadProjects(currentPage);
   };
 
+  // Trigger reload when currentPage changes
   useEffect(() => {
-    loadProjects();
-  }, []);
+    loadProjects(currentPage);
+  }, [currentPage]);
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
-
       {/* HEADER */}
       <div className="flex justify-between items-center mb-7">
         <div>
@@ -57,8 +66,9 @@ export default function ProjectsPage() {
         </button>
       </div>
 
-      {/* EMPTY STATE */}
-      {projects.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-24 text-slate-400 text-[13px]">Loading...</div>
+      ) : projects.length === 0 ? (
         <div className="text-center py-24 px-4 text-slate-400">
           <div className="text-[52px]">📁</div>
           <p className="font-semibold">No projects yet</p>
@@ -69,17 +79,10 @@ export default function ProjectsPage() {
             <thead>
               <tr className="bg-slate-50">
                 {[
-                  "Title",
-                  "Project Name",
-                  "Project Code",
-                  "Status",
-                  "Start",
-                  "End",
-                  "Budget",
-                  "Manager",
-                  "Action",
+                  "Title", "Project Name", "Project Code", "Status",
+                  "Start", "End", "Budget", "Manager", "Action",
                 ].map((h) => (
-                  <th key={h} className="py-3 px-4 text-left">
+                  <th key={h} className="py-3 px-4 text-left font-semibold text-slate-600">
                     {h}
                   </th>
                 ))}
@@ -88,38 +91,24 @@ export default function ProjectsPage() {
 
             <tbody>
               {projects.map((p, i) => {
-                const statusColors =
-                  STATUS_COLORS[p.status] || STATUS_COLORS.todo;
-
+                const statusColors = STATUS_COLORS[p.status] || STATUS_COLORS.todo;
                 return (
-                  <tr
-                    key={p.id}
-                    className={i % 2 ? "bg-[#fafafa]" : "bg-white"}
-                  >
+                  <tr key={p.id} className={i % 2 ? "bg-[#fafafa]" : "bg-white"}>
                     <td className="py-3 px-4 font-semibold">{p.title}</td>
                     <td className="py-3 px-4">{p.projectname}</td>
                     <td className="py-3 px-4">{p.projectcode}</td>
-
                     <td className="py-3 px-4">
                       <span
                         className="px-3 py-1 rounded-full text-xs font-medium inline-block"
-                        style={{
-                          background: statusColors.bg,
-                          color: statusColors.text,
-                        }}
+                        style={{ background: statusColors.bg, color: statusColors.text }}
                       >
                         {formatStatus(p.status)}
                       </span>
                     </td>
-
                     <td className="py-3 px-4">{p?.startdate || "—"}</td>
                     <td className="py-3 px-4">{p?.enddate || "—"}</td>
                     <td className="py-3 px-4">{p?.budgethours || "—"}</td>
-
-                    <td className="py-3 px-4">
-                      {formatStatus(p?.manager?.name) || "—"}
-                    </td>
-
+                    <td className="py-3 px-4">{p?.manager?.name || "—"}</td>
                     <td className="py-3 px-4">
                       <button
                         onClick={() => openEdit(p)}
@@ -133,6 +122,29 @@ export default function ProjectsPage() {
               })}
             </tbody>
           </table>
+
+          {/* PAGINATION CONTROLS */}
+          <div className="px-5 py-4 bg-white border-t border-slate-100 flex justify-between items-center rounded-b-xl">
+            <span className="text-[12px] text-slate-400">
+              Page {currentPage} of {totalPages}
+            </span>
+            <div className="flex gap-2">
+              <button
+                disabled={currentPage <= 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+                className="px-3 py-1.5 rounded border border-slate-200 text-[12px] bg-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition"
+              >
+                Prev
+              </button>
+              <button
+                disabled={currentPage >= totalPages}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                className="px-3 py-1.5 rounded border border-slate-200 text-[12px] bg-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

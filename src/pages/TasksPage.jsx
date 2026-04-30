@@ -26,7 +26,7 @@ export default function TasksPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  const { data, loading, refetch } = useTasks({ page:1, search:'' });
+  const { data, loading, refetch } = useTasks({ page, search: '' });
 
   const response = data?.getTasks;
   const tasks = response?.results || [];
@@ -148,30 +148,31 @@ export default function TasksPage() {
             )}
           </tbody>
         </table>
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-end gap-2 mt-4">
-          <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-            className="px-3 py-1.5 rounded-lg text-[13px] font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
-          >
-            Previous
-          </button>
-          <span className="text-[13px] text-slate-500">
-            Page {page} of {totalPages}
+        {/* Pagination */}
+        <div className="px-5 py-4 bg-white border-t border-slate-100 flex justify-between items-center rounded-b-xl">
+          <span className="text-[12px] text-slate-400">
+            Page {page} of {totalPages || 1}
           </span>
-          <button
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page === totalPages}
-            className="px-3 py-1.5 rounded-lg text-[13px] font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
-          >
-            Next
-          </button>
+          <div className="flex gap-2">
+            <button
+              disabled={page <= 1}
+              onClick={() => setPage(p => p - 1)}
+              className="px-3 py-1 rounded border border-slate-200 text-xs disabled:opacity-50 hover:bg-slate-50 transition"
+            >
+              Prev
+            </button>
+            <button
+              disabled={page >= totalPages}
+              onClick={() => setPage(p => p + 1)}
+              className="px-3 py-1 rounded border border-slate-200 text-xs disabled:opacity-50 hover:bg-slate-50 transition"
+            >
+              Next
+            </button>
+          </div>
         </div>
-      )}
+
+
+      </div>
 
       <TaskModal
         isOpen={modalOpen}

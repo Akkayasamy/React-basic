@@ -40,8 +40,8 @@ export function SubtaskModal({ isOpen, onClose, editData, onSuccess, parentTaskI
                 startDate: editData.startDate || "",
                 dueDate: editData.dueDate || "",
                 status: editData.status || "todo",
-                estimatedHours: editData.estimatedHours || 0,
-                actualHours: editData.actualHours || 0,
+                estimatedHours: editData.estimatedHours || null,
+                actualHours: editData.actualHours || null,
             });
         } else {
             setForm({ ...EMPTY_FORM, taskId: parentTaskId || "" });
@@ -51,8 +51,12 @@ export function SubtaskModal({ isOpen, onClose, editData, onSuccess, parentTaskI
     if (!isOpen) return null;
 
     const handleSubmit = async () => {
-        if (!form.title || !form.subTaskName || !form.taskId) {
-            return toast.error("Title, Subtask Name, and Task are required");
+        const isEmpty = Object.values(form).some(
+            (value) => value === null || value === undefined || value.toString().trim() === ""
+        );
+
+        if (isEmpty) {
+            return toast.error("All fields are required.");
         }
         setLoading(true);
         try {
@@ -81,7 +85,9 @@ export function SubtaskModal({ isOpen, onClose, editData, onSuccess, parentTaskI
     const inputClass = "w-full px-3 py-2 rounded-lg text-[13px] border border-slate-200 bg-slate-50 outline-none focus:border-sky-400 transition-colors";
 
     return (
-        <div className="fixed inset-0 z-[1000] bg-slate-900/45 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            onClick={(e) => e.target === e.currentTarget && onClose()}
+            className="fixed inset-0 z-[1000] bg-slate-900/45 backdrop-blur-sm flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl w-full max-w-[550px] shadow-xl overflow-hidden max-h-[90vh] overflow-y-auto">
                 <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
                     <div>
@@ -95,10 +101,10 @@ export function SubtaskModal({ isOpen, onClose, editData, onSuccess, parentTaskI
                     {/* Parent Task Dropdown */}
                     <div className="col-span-2">
                         <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">Task <span className="text-red-500">*</span></label>
-                        <select 
-                            className={inputClass} 
-                            value={form.taskId} 
-                            onChange={(e) => setForm({...form, taskId: e.target.value})}
+                        <select
+                            className={inputClass}
+                            value={form.taskId}
+                            onChange={(e) => setForm({ ...form, taskId: e.target.value })}
                             disabled={!!parentTaskId && !isEdit} // Disable if passed from task-specific view
                         >
                             <option value="">{loadingTasks ? "Loading tasks..." : "Select Task"}</option>
@@ -112,45 +118,45 @@ export function SubtaskModal({ isOpen, onClose, editData, onSuccess, parentTaskI
 
                     <div className="col-span-2">
                         <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">Title <span className="text-red-500">*</span></label>
-                        <input className={inputClass} value={form.title} onChange={(e) => setForm({...form, title: e.target.value})} placeholder="e.g., API Implementation" />
+                        <input className={inputClass} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="e.g., API Implementation" />
                     </div>
 
                     <div className="col-span-2">
                         <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">Subtask Name <span className="text-red-500">*</span></label>
-                        <input className={inputClass} value={form.subTaskName} onChange={(e) => setForm({...form, subTaskName: e.target.value})} placeholder="e.g., Auth Module" />
+                        <input className={inputClass} value={form.subTaskName} onChange={(e) => setForm({ ...form, subTaskName: e.target.value })} placeholder="e.g., Auth Module" />
                     </div>
 
                     {/* Date Fields */}
                     <div>
                         <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">Start Date</label>
-                        <input type="date" className={inputClass} value={form.startDate} onChange={(e) => setForm({...form, startDate: e.target.value})} />
+                        <input type="date" className={inputClass} value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} />
                     </div>
                     <div>
                         <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">Due Date</label>
-                        <input type="date" className={inputClass} value={form.dueDate} onChange={(e) => setForm({...form, dueDate: e.target.value})} />
+                        <input type="date" className={inputClass} value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} />
                     </div>
 
                     <div>
                         <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">Assignee</label>
-                        <select className={inputClass} value={form.assignedTo} onChange={(e) => setForm({...form, assignedTo: e.target.value})}>
+                        <select className={inputClass} value={form.assignedTo} onChange={(e) => setForm({ ...form, assignedTo: e.target.value })}>
                             <option value="">Select User</option>
                             {users.map(u => <option key={u.id} value={u.id}>{u.first_name}</option>)}
                         </select>
                     </div>
                     <div>
                         <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">Status</label>
-                        <select className={inputClass} value={form.status} onChange={(e) => setForm({...form, status: e.target.value})}>
+                        <select className={inputClass} value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
                             {STATUS_OPTIONS.map(s => <option key={s} value={s}>{formatStatus(s)}</option>)}
                         </select>
                     </div>
 
                     <div>
                         <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">Est. Hours</label>
-                        <input type="number" className={inputClass} value={form.estimatedHours} onChange={(e) => setForm({...form, estimatedHours: e.target.value})} />
+                        <input type="number" className={inputClass} value={form.estimatedHours} onChange={(e) => setForm({ ...form, estimatedHours: e.target.value })} />
                     </div>
                     <div>
                         <label className="block text-[11px] font-bold text-slate-500 uppercase mb-1">Actual Hours</label>
-                        <input type="number" className={inputClass} value={form.actualHours} onChange={(e) => setForm({...form, actualHours: e.target.value})} />
+                        <input type="number" className={inputClass} value={form.actualHours} onChange={(e) => setForm({ ...form, actualHours: e.target.value })} />
                     </div>
                 </div>
 

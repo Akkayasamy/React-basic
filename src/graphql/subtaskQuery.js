@@ -4,13 +4,14 @@ import { client } from "../apollo/apolloClient.js";
 import { GET_SUBTASKS, SAVE_SUBTASK } from "./query.js";
 
 
-export function useSubtasks({ taskId, projectId, status, search = "" } = {}) {
+export function useSubtasks({ taskId, projectId, status, search = "",page } = {}) {
   return useQuery(GET_SUBTASKS, {
     variables: { 
       taskId: taskId ? parseInt(taskId) : undefined,
       projectId: projectId ? parseInt(projectId) : undefined,
       status: status || undefined,
-      search 
+      search ,
+      page
     },
     fetchPolicy: "network-only",
   });

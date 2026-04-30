@@ -5,9 +5,14 @@ import { useMilestones } from "../graphql/milestoneMutations";
 
 export default function MilestonesPage() {
   const [modalOpen, setModalOpen] = useState(false);
-  const [editData, setEditData]   = useState(null);
+  const [editData, setEditData] = useState(null);
 
-  const { data: milestones = [], loading, refetch } = useMilestones({ page: 1, search: "" });
+  const [page, setPage] = useState(1);
+
+  const { data, loading, refetch ,totalCount} = useMilestones({ page, search: "" });
+
+  const milestones = data || []; 
+  const totalPages = Math.ceil(totalCount / 10);
 
   const openCreate = () => {
     setEditData(null);
@@ -121,6 +126,29 @@ export default function MilestonesPage() {
               })}
             </tbody>
           </table>
+
+          {/* FIX 4: Add Pagination Controls */}
+          <div className="px-5 py-4 bg-white border-t border-slate-100 flex justify-between items-center rounded-b-xl">
+            <span className="text-[12px] text-slate-400">
+              Page {page} of {totalPages || 1}
+            </span>
+            <div className="flex gap-2">
+              <button
+                disabled={page <= 1}
+                onClick={() => setPage((p) => p - 1)}
+                className="px-3 py-1.5 rounded border border-slate-200 text-[12px] bg-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
+              >
+                Prev
+              </button>
+              <button
+                disabled={page >= totalPages}
+                onClick={() => setPage((p) => p + 1)}
+                className="px-3 py-1.5 rounded border border-slate-200 text-[12px] bg-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

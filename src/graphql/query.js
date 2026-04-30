@@ -217,12 +217,14 @@ query getSubtasks(
   $projectId: Int, 
   $status: String, 
   $search: String
+  $page:Int
 ) {
   getSubtasks(
     taskId: $taskId,
     projectId: $projectId,
     status: $status,
     search: $search
+    page:$page
   ) {
     status
     errorMessage
