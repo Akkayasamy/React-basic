@@ -7,7 +7,7 @@ import { useTasks } from "../graphql/taskQuery.js";
 const PRIORITY_COLORS = {
   low: "bg-slate-100 text-slate-600",
   normal: "bg-blue-100 text-blue-700",
-  low: "bg-orange-100 text-orange-700"
+  high: "bg-orange-100 text-orange-700"
 };
 
 const STATUS_COLORS = {
