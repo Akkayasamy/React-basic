@@ -7,89 +7,137 @@ export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login");
 
   return (
-    // "h-screen" and "overflow-hidden" prevents the whole page from bouncing
-    <div className="flex h-screen overflow-hidden bg-white">
+    <div className="flex h-screen w-screen overflow-hidden">
 
-      {/* ── LEFT PANEL (Fixed) ── */}
-      <div className="hidden md:flex flex-1 flex-col items-center justify-center relative p-10 bg-[linear-gradient(to_right,#e0f2fe_0%,#7dd3fc_50%,#ffffff_100%)]">
-        <div className="relative z-10 text-center">
-          <a href="https://nijatech.com/" target="_blank" rel="noreferrer">
-            <img
-              src={logo}
-              alt="logo"
-              className="w-32 h-auto mx-auto"
-            />
-          </a>
+      <div className="hidden md:flex w-[44%] flex-shrink-0 flex-col relative overflow-hidden bg-[#1a1f8f] p-8 text-white">
+
+        <div className="absolute -top-24 -right-20 w-80 h-80 bg-[#2832b0] rounded-full opacity-50" />
+        <div className="absolute -bottom-16 right-10 w-64 h-64 bg-[#1228a0] rounded-full opacity-40" />
+        <div className="absolute top-44 right-5 w-24 h-24 bg-[#3a45cc] rounded-full opacity-30" />
+
+        <div className="relative z-10 flex items-center gap-3 mb-6">
+          <div className="w-11 h-11 bg-[#4f5bd5] rounded-xl flex items-center justify-center">
+            <img src={logo} alt="logo" className="w-7 h-auto" />
+          </div>
+          <div>
+            <div className="text-[19px] font-bold">
+              Pro <span className="text-blue-400">Manage</span>
+            </div>
+            <div className="text-[10px] text-white/40 tracking-wide">
+              Project Management System
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* ── RIGHT PANEL (Scrollable) ── */}
-      <div className="flex-1 flex flex-col h-full overflow-y-auto bg-white">
+        <div className="relative z-10 mb-6">
+          <h1 className="text-[28px] font-extrabold leading-tight mb-2">
+            Manage Projects.<br />
+            Deliver Results.<br />
+            <span className="text-blue-400">Drive Success.</span>
+          </h1>
+          <div className="w-10 h-[3px] bg-[#4f5bd5] rounded mb-3" />
+          <p className="text-[13px] text-white/50 leading-relaxed">
+            Plan projects, track progress, manage tasks,<br />
+            and collaborate with your team – all in one<br />
+            powerful platform.
+          </p>
+        </div>
 
-        {/* Sticky Top Nav: Stays at top while form scrolls under it */}
-        <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-sm flex justify-end gap-8 px-10 py-6">
-          {["login", "register"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`text-[13px] font-semibold uppercase tracking-wider transition-all duration-300
-                ${activeTab === tab
-                  ? "text-sky-400 border-b-2 border-sky-400 pb-1"
-                  : "text-gray-500 hover:text-gray-400 border-b-2 border-transparent pb-1"
-                }`}
-            >
-              {tab}
-            </button>
+        <div className="relative z-10 flex flex-col gap-3">
+          {[
+            {
+              bg: "bg-[#3b4fd4]", title: "Projects & Milestones", desc: "Plan, organize and track project milestones with ease.",
+              icon: <svg className="w-[18px] h-[18px]" fill="white" viewBox="0 0 20 20"><rect x="2" y="2" width="7" height="7" rx="1" /><rect x="11" y="2" width="7" height="7" rx="1" /><rect x="2" y="11" width="7" height="7" rx="1" /><rect x="11" y="11" width="7" height="7" rx="1" /></svg>
+            },
+            {
+              bg: "bg-[#0f6e56]", title: "Tasks & Subtasks", desc: "Break down work, assign tasks and monitor progress.",
+              icon: <svg className="w-[18px] h-[18px]" fill="none" stroke="white" strokeWidth={2} viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" rx="2" /><path strokeLinecap="round" d="M6 10l3 3 5-5" /></svg>
+            },
+            {
+              bg: "bg-[#6d3fc0]", title: "Timesheet & Tracking", desc: "Track time, manage workload and improve productivity.",
+              icon: <svg className="w-[18px] h-[18px]" fill="none" stroke="white" strokeWidth={1.8} viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" /><path strokeLinecap="round" d="M10 6v4l2.5 2.5" /></svg>
+            },
+            {
+              bg: "bg-[#c2410c]", title: "Reports & Insights", desc: "Get real-time insights and make data-driven decisions.",
+              icon: <svg className="w-[18px] h-[18px]" fill="white" viewBox="0 0 20 20"><rect x="2" y="11" width="3" height="7" rx="1" /><rect x="8" y="7" width="3" height="11" rx="1" /><rect x="14" y="3" width="3" height="15" rx="1" /></svg>
+            },
+          ].map((f) => (
+            <div key={f.title} className="flex items-start gap-3">
+              <div className={`${f.bg} w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0`}>
+                {f.icon}
+              </div>
+              <div>
+                <div className="text-[13px] font-bold">{f.title}</div>
+                <div className="text-[11px] text-white/40 leading-tight">{f.desc}</div>
+              </div>
+            </div>
           ))}
         </div>
 
-        {/* Form area: items-center ensures it stays centered if height allows */}
-        <div className="flex-1 flex items-center justify-center p-2 min-h-fit">
-          <div className="w-full max-w-[340px] py-1">
-
-            {activeTab === "login" ? (
-              <>
-                <p className="text-[11px] tracking-widest uppercase text-gray-400 mb-1">
-                  Welcome back
-                </p>
-                <h3 className="text-[1.6rem] font-normal text-gray-900 mb-7 font-serif">
-                  Sign in
-                </h3>
-                <Login setActiveTab={setActiveTab} />
-                <p className="text-center mt-5 text-[13px] text-gray-400">
-                  No account?{" "}
-                  <button
-                    onClick={() => setActiveTab("register")}
-                    className="text-sky-600 font-medium text-[13px] hover:underline"
-                  >
-                    Register →
-                  </button>
-                </p>
-              </>
-            ) : (
-              <>
-                <p className="text-[11px] tracking-widest uppercase text-gray-400 mb-1">
-                  Get started
-                </p>
-                <h3 className="text-[1.6rem] font-normal text-gray-900 mb-7 font-serif">
-                  Create account
-                </h3>
-                <Register setActiveTab={setActiveTab} />
-                <p className="text-center mt-5 text-[13px] text-gray-400">
-                  Have an account?{" "}
-                  <button
-                    onClick={() => setActiveTab("login")}
-                    className="text-sky-600 font-medium text-[13px] hover:underline"
-                  >
-                    Sign in →
-                  </button>
-                </p>
-              </>
-            )}
-
-          </div>
+        <div className="absolute bottom-8 left-0 right-0 flex justify-center items-center z-10">
+          <p className="text-[11px] text-white/30 tracking-wider">
+            © 2024 ProManage. All rights reserved.
+          </p>
         </div>
       </div>
+
+      <div className="flex-1 bg-[#f0f2f8] flex flex-col items-center justify-center px-6 overflow-hidden">
+
+        <div className="bg-white rounded-2xl p-6 w-full max-w-[420px] border border-gray-100 shadow-sm flex flex-col">
+
+          {activeTab === "login" ? (
+            <>
+              <h2 className="text-[20px] font-extrabold text-gray-900 text-center mb-1">
+                Welcome Back!
+              </h2>
+              <p className="text-[12px] text-gray-500 text-center mb-5">
+                Sign in to your ProManage account
+              </p>
+              <Login setActiveTab={setActiveTab} />
+              <p className="text-center mt-4 text-[12px] text-gray-500">
+                Don't have an account?{" "}
+                <button
+                  onClick={() => setActiveTab("register")}
+                  className="text-blue-600 font-semibold hover:underline"
+                >
+                  Sign up here
+                </button>
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-[20px] font-extrabold text-gray-900 text-center mb-1">
+                Create Account
+              </h2>
+              <p className="text-[12px] text-gray-500 text-center mb-5">
+                Join ProManage and get started today
+              </p>
+
+              <div className="register-form-container">
+                <Register setActiveTab={setActiveTab} />
+              </div>
+
+              <p className="text-center mt-4 text-[12px] text-gray-500">
+                Already have an account?{" "}
+                <button
+                  onClick={() => setActiveTab("login")}
+                  className="text-blue-600 font-semibold hover:underline"
+                >
+                  Sign in
+                </button>
+              </p>
+            </>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 mt-4 text-[11px] text-gray-400">
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 16 16">
+            <path d="M8 2L3 4.5v4C3 11.5 5.5 14 8 15c2.5-1 5-3.5 5-6.5v-4L8 2z" />
+          </svg>
+          Your data is secure with us
+        </div>
+      </div>
+
     </div>
   );
 }
