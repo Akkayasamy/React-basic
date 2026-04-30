@@ -16,9 +16,11 @@ export default function AuthPage() {
         <div className="absolute top-44 right-5 w-24 h-24 bg-[#3a45cc] rounded-full opacity-30" />
 
         <div className="relative z-10 flex items-center gap-3 mb-6">
-          <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center">
-            <img src={logo} alt="logo" className="w-7 h-auto" />
-          </div>
+          <a href="https://nijatech.com/" target="_blank" rel="noopener noreferrer">
+            <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center">
+              <img src={logo} alt="logo" className="w-7 h-auto" />
+            </div>
+          </a>
           <div>
             <div className="text-[19px] font-bold">
               NIJA <span className="text-black">TECH</span>
@@ -35,7 +37,7 @@ export default function AuthPage() {
             Deliver Results.<br />
             <span className="text-blue-400">Drive Success.</span>
           </h1>
-          <div className="w-10 h-[3px] bg-[#4f5bd5] rounded mb-3" />
+          <div className="w-10 h-[3px] bg-[#4f5bd5] rounded mb-3 p-1" />
           <p className="text-[13px] text-white/50 leading-relaxed">
             Plan projects, track progress, manage tasks,<br />
             and collaborate with your team – all in one<br />
@@ -43,7 +45,7 @@ export default function AuthPage() {
           </p>
         </div>
 
-        <div className="relative z-10 flex flex-col gap-3">
+        <div className="relative z-10 flex flex-col gap-3 p-4">
           {[
             {
               bg: "bg-[#3b4fd4]", title: "Projects & Milestones", desc: "Plan, organize and track project milestones with ease.",
