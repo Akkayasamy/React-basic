@@ -26,7 +26,7 @@ export default function TasksPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  const { data, loading, refetch } = useTasks({ page, search });
+  const { data, loading, refetch } = useTasks({ page:1, search:'' });
 
   const response = data?.getTasks;
   const tasks = response?.results || [];

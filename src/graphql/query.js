@@ -149,13 +149,18 @@ export const GET_TASKS = gql`
         taskName
         status
         priority
+        startDate
+        dueDate
         project {
+          id
           projectname
         }
         assignee {
+          id
           first_name
         }
         milestone {
+          id
           milestoneName
         }
       }
@@ -201,6 +206,87 @@ export const GET_MILESTONES_BY_PROJECT = gql`
         id
         milestoneName
       }
+    }
+  }
+`;
+
+
+export const GET_SUBTASKS = gql`
+query getSubtasks(
+  $taskId: Int, 
+  $projectId: Int, 
+  $status: String, 
+  $search: String
+) {
+  getSubtasks(
+    taskId: $taskId,
+    projectId: $projectId,
+    status: $status,
+    search: $search
+  ) {
+    status
+    errorMessage
+    totalCount
+    results {
+      id
+      title
+      subTaskName
+      status
+      startDate
+      dueDate
+      estimatedHours
+      actualHours
+      task {
+        id
+        title
+        taskCode
+      }
+      project {
+        title
+      }
+			milestone{
+				title
+			}
+      assignee {
+        id
+        first_name
+      }
+    }
+  }
+}     
+`;
+
+export const SAVE_SUBTASK = gql`
+  mutation createSubtask(
+    $id: Int
+    $title: String
+    $subTaskName: String
+    $taskId: Int
+    $projectId: Int
+    $milestoneId: Int
+    $assignedTo: String
+    $startDate: String
+    $dueDate: String
+    $status: String
+    $estimatedHours: Float
+    $actualHours: Float
+  ) {
+    createSubtask(
+      id: $id
+      title: $title
+      subTaskName: $subTaskName
+      taskId: $taskId
+      projectId: $projectId
+      milestoneId: $milestoneId
+      assignedTo: $assignedTo
+      startDate: $startDate
+      dueDate: $dueDate
+      status: $status
+      estimatedHours: $estimatedHours
+      actualHours: $actualHours
+    ) {
+      status
+      errorMessage
     }
   }
 `;

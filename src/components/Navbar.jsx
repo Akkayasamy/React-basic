@@ -31,11 +31,11 @@ export default function Navbar({ isOpen, setIsOpen }) {
         onClick={() => navigate("/dashboard")}
         className="flex items-center gap-2.5 cursor-pointer shrink-0"
       >
-        <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
           <img src={logo} alt="logo" className="w-5 h-auto" />
         </div>
         <div className="hidden sm:block">
-          <div className="text-white font-bold text-[14px] leading-tight">ProManage</div>
+          <div className="text-white font-bold text-[14px] leading-tight">NIJA TECH</div>
           <div className="text-white/35 text-[9.5px] leading-tight">Project Management System</div>
         </div>
       </div>

@@ -4,9 +4,9 @@ import { useQuery } from "@apollo/client/react";
 import { client } from "../apollo/apolloClient.js";
 import { GET_MILESTONES_BY_PROJECT, GET_TASKS, SAVE_TASK } from "./query.js";
 
-export function useTasks({ page = 1, search = "" } = {}) {
+export function useTasks(variables =  {}) {
   return useQuery(GET_TASKS, {
-    variables: { page, search },
+    variables,
     fetchPolicy: "network-only",
   });
 }

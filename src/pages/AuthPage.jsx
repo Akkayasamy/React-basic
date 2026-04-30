@@ -16,12 +16,12 @@ export default function AuthPage() {
         <div className="absolute top-44 right-5 w-24 h-24 bg-[#3a45cc] rounded-full opacity-30" />
 
         <div className="relative z-10 flex items-center gap-3 mb-6">
-          <div className="w-11 h-11 bg-[#4f5bd5] rounded-xl flex items-center justify-center">
+          <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center">
             <img src={logo} alt="logo" className="w-7 h-auto" />
           </div>
           <div>
             <div className="text-[19px] font-bold">
-              Pro <span className="text-blue-400">Manage</span>
+              NIJA <span className="text-black">TECH</span>
             </div>
             <div className="text-[10px] text-white/40 tracking-wide">
               Project Management System
@@ -76,7 +76,7 @@ export default function AuthPage() {
 
         <div className="absolute bottom-8 left-0 right-0 flex justify-center items-center z-10">
           <p className="text-[11px] text-white/30 tracking-wider">
-            © 2024 ProManage. All rights reserved.
+            © 2026 NIJA TECH. All rights reserved.
           </p>
         </div>
       </div>
