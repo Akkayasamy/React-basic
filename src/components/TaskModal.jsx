@@ -15,7 +15,7 @@ const EMPTY_FORM = {
     assignedTo: "",
     startDate: "",
     dueDate: "",
-    priority: "medium",
+    priority: "low",
     status: "todo",
 };
 

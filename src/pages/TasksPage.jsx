@@ -63,14 +63,14 @@ export default function TasksPage() {
       </div>
 
       {/* Search */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <input
           className="w-full max-w-sm px-3 py-2 rounded-lg text-[13px] text-slate-900 border border-slate-200 bg-white outline-none focus:border-sky-400 transition-colors"
           placeholder="Search tasks..."
           value={search}
           onChange={handleSearch}
         />
-      </div>
+      </div> */}
 
       {/* Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
