@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { MilestoneModal } from "../components/MilestoneModal";
-import { fullName, getInitials, getAvatarColor, STATUS_STYLES } from "../utils/common";
+import { TaskModal } from "../components/TaskModal.jsx"; // ✅ FIX ADDED
+import {
+  fullName,
+  getInitials,
+  getAvatarColor,
+  STATUS_STYLES,
+} from "../utils/common";
 
 
 const Avatar = ({ name = "", size = 22 }) => (
@@ -65,7 +71,7 @@ const TD = ({ children }) => (
 const ActionBtn = ({ onClick }) => (
   <button
     onClick={(e) => {
-      e.stopPropagation(); // 🔥 IMPORTANT
+      e.stopPropagation();
       onClick?.();
     }}
     className="text-gray-400 text-lg px-1 hover:text-gray-600 cursor-pointer"
@@ -73,7 +79,6 @@ const ActionBtn = ({ onClick }) => (
     ⋮
   </button>
 );
-
 
 /* ================= TIMESHEET ================= */
 
@@ -128,7 +133,12 @@ const SubtaskSection = ({ subtasks = [] }) => {
 
   return (
     <div className="bg-blue-50 rounded-md mt-1">
-      <SectionLabel label="Subtasks" color="#3b82f6" open={open} onToggle={() => setOpen((p) => !p)} />
+      <SectionLabel
+        label="Subtasks"
+        color="#3b82f6"
+        open={open}
+        onToggle={() => setOpen((p) => !p)}
+      />
 
       {open && (
         <div className="pl-6 pb-2">
@@ -185,7 +195,7 @@ const SubtaskSection = ({ subtasks = [] }) => {
 
 /* ================= TASK ================= */
 
-const TaskRow = ({ task, index }) => {
+const TaskRow = ({ task, index, onEditTask }) => {
   const [open, setOpen] = useState(false);
   const hasChild = task.subtasks?.length || task.timesheets?.length;
   const name = fullName(task.assignee);
@@ -207,7 +217,7 @@ const TaskRow = ({ task, index }) => {
 
         <span className="text-gray-500">{task.startDate}</span>
         <StatusBadge status={task.status} />
-        <ActionBtn />
+        <ActionBtn onClick={() => onEditTask(task)} />
       </div>
 
       {open && (
@@ -220,13 +230,18 @@ const TaskRow = ({ task, index }) => {
   );
 };
 
-const TaskSection = ({ tasks = [] }) => {
+const TaskSection = ({ tasks = [], onEditTask }) => {
   const [open, setOpen] = useState(true);
   if (!tasks.length) return null;
 
   return (
     <div className="bg-gray-50 rounded-md mt-2">
-      <SectionLabel label="Tasks" color="#3b82f6" open={open} onToggle={() => setOpen(!open)} />
+      <SectionLabel
+        label="Tasks"
+        color="#3b82f6"
+        open={open}
+        onToggle={() => setOpen(!open)}
+      />
 
       {open && (
         <div className="pl-4">
@@ -241,7 +256,12 @@ const TaskSection = ({ tasks = [] }) => {
           </div>
 
           {tasks.map((t, i) => (
-            <TaskRow key={i} task={t} index={i} />
+            <TaskRow
+              key={i}
+              task={t}
+              index={i}
+              onEditTask={onEditTask}
+            />
           ))}
         </div>
       )}
@@ -249,16 +269,28 @@ const TaskSection = ({ tasks = [] }) => {
   );
 };
 
-/* ================= MILESTONE ================= */
 
-const MilestoneRow = ({ milestone, index, onEdit }) => {
+const MilestoneRow = ({ milestone, index, onEdit, refetch }) => {
   const [open, setOpen] = useState(true);
+
+  const [taskModalOpen, setTaskModalOpen] = useState(false);
+  const [taskEditData, setTaskEditData] = useState(null);
+
+  const openEditTask = (task) => {
+    setTaskEditData(task);
+    setTaskModalOpen(true);
+  };
+
+  const onTaskSuccess = () => {
+    setTaskModalOpen(false);
+    refetch();
+  };
 
   return (
     <div className="rounded-xl mb-3 bg-white shadow-sm">
       <div
         onClick={() => setOpen(!open)}
-        className="grid grid-cols-[20px_30px_1fr_120px_120px_120px_80px] px-4 py-3 items-center hover:bg-gray-50 cursor-pointer rounded-t-xl"
+        className="grid grid-cols-[20px_30px_1fr_120px_120px_120px_80px] px-4 py-3 items-center hover:bg-gray-50 cursor-pointer"
       >
         <Chevron open={open} />
         <span className="text-gray-400">{index + 1}</span>
@@ -266,14 +298,22 @@ const MilestoneRow = ({ milestone, index, onEdit }) => {
         <span className="text-gray-500">{milestone.startDate}</span>
         <span className="text-gray-500">{milestone.endDate}</span>
         <StatusBadge status={milestone.status} />
-        <ActionBtn onClick={() => onEdit(milestone)} />      </div>
 
-      {open && <TaskSection tasks={milestone.tasks} />}
+        <ActionBtn onClick={() => onEdit(milestone)} />
+      </div>
+
+      {open && <TaskSection tasks={milestone.tasks} onEditTask={openEditTask} />}
+      {/* ✅ TASK MODAL FIX */}
+      <TaskModal
+        isOpen={taskModalOpen}
+        onClose={() => setTaskModalOpen(false)}
+        editData={taskEditData}
+        onSuccess={onTaskSuccess}
+      />
     </div>
   );
 };
 
-/* ================= MAIN ================= */
 
 const ProjectTree = ({ milestones = [], refetch }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -308,19 +348,21 @@ const ProjectTree = ({ milestones = [], refetch }) => {
         <span>Actions</span>
       </div>
 
-      {milestones.map((m, i) => (
+      {milestones?.map((m, i) => (
         <MilestoneRow
           key={i}
           milestone={m}
           index={i}
           onEdit={openEdit}
+          refetch={refetch}
         />
       ))}
+
       <MilestoneModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         editData={editData}
-        onSuccess={() => onSuccess()}
+        onSuccess={onSuccess}
       />
     </div>
   );

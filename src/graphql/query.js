@@ -462,14 +462,26 @@ export const GET_ALL_PROJECTS_TREE = gql`
 				 }
           tasks {
             id
+            taskCode
             title
+            taskName
+            status
+            priority
+            startDate
+            dueDate
+             project {
+              id
+              projectname
+            }
             assignee {
               id
               first_name
               last_name
             }
-            startDate
-            status
+            milestone {
+               id
+               milestoneName
+             }
             timesheets {
               id
               workDate
