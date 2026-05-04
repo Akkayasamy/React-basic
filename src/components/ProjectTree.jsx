@@ -13,15 +13,20 @@ const getInitials = (name = "") =>
 const getAvatarColor = (name = "") =>
   AVATAR_COLORS[(name.charCodeAt(0) || 0) % AVATAR_COLORS.length];
 
-const STATUS_STYLES = {
-  Completed:    { background: "#dcfce7", color: "#16a34a", border: "1px solid #bbf7d0" },
-  "In Progress":{ background: "#dbeafe", color: "#1d4ed8", border: "1px solid #bfdbfe" },
-  Pending:      { background: "#fef9c3", color: "#a16207", border: "1px solid #fef08a" },
-  Approved:     { background: "#dcfce7", color: "#16a34a", border: "1px solid #bbf7d0" },
-  Rejected:     { background: "#fee2e2", color: "#dc2626", border: "1px solid #fecaca" },
+
+export const STATUS_STYLES = {
+  todo: { background: "#e2e8f0", text: "#475569" },
+  pending: { background: "#bdad97", text: "#a16207", color: "#a16207" },
+  in_progress: { background: "#dbeafe", text: "#1e40af", color: "#1d4ed8" },
+  in_review: { background: "#fef3c7", text: "#92400e", color: "#a16207" },
+  blocked: { background: "#fee2e2", text: "#991b1b", color: "#dc2626" },
+  on_hold: { background: "#ffedd5", text: "#9a3412", color: "#dc2626" },
+  done: { background: "#dcfce7", text: "#166534", color: "#16a34a", },
+  cancelled: { background: "#f1f5f9", text: "#64748b", color: "#dc2626" },
+  completed: { background: "#dcfce7", text: "#166534", color: "#16a34a", },
+  delayed: { background: "#fee2e2", text: "#991b1b", color: "#dc2626" },
 };
 
-// ─── Atoms ───────────────────────────────────────────────────────────────────
 
 const Avatar = ({ name = "", size = 22 }) => (
   <div style={{
