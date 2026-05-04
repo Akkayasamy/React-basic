@@ -8,7 +8,7 @@ const OverViewPage = () => {
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
-    const { data: projects, loading, errorMessage, totalPages, totalCount } =
+    const { data: projects, loading, errorMessage, totalPages, totalCount, refetch } =
         useProjectTree({ search, currentPage });
 
     const handleSearch = (val) => {
@@ -109,7 +109,7 @@ const OverViewPage = () => {
                             border: "1px solid #e5e7eb", padding: "16px 20px",
                             boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
                         }}>
-                            <ProjectTree milestones={project.milestones || []} />
+                            <ProjectTree milestones={project.milestones || []} refetch={refetch} />
                         </div>
 
                     </div>

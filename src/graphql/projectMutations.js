@@ -119,7 +119,7 @@ export const useProjects = (skip = false) => {
 };
 
 export const useProjectTree = ({ search = "", currentPage = 1 } = {}) => {
-  const { data, loading, error } = useQuery(GET_ALL_PROJECTS_TREE, {
+  const { data, loading, error,refetch } = useQuery(GET_ALL_PROJECTS_TREE, {
     variables: { search: search || undefined, currentPage },
     fetchPolicy: "cache-and-network",
   });
@@ -133,5 +133,6 @@ export const useProjectTree = ({ search = "", currentPage = 1 } = {}) => {
     currentPage: data?.getAllProjects?.currentPage,
     loading,
     error,
+    refetch
   };
 };

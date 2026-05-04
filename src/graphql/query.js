@@ -293,7 +293,7 @@ export const SAVE_SUBTASK = gql`
   }
 `;
 
-export const CREATE_TIMESHEET= gql`
+export const CREATE_TIMESHEET = gql`
 mutation createTimesheet(
   $id: Int
   $title: String!
@@ -448,7 +448,14 @@ export const GET_ALL_PROJECTS_TREE = gql`
           startDate
           endDate
           status
-          owner{
+          milestoneName
+          milestoneOwner
+          project {
+           id
+           projectname
+           projectcode
+         }
+        owner{
           id
 					first_name
 					last_name

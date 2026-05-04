@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { fullName, getInitials, getAvatarColor, STATUS_STYLES } from "../utils/common";
+import { MilestoneModal } from "../components/MilestoneModal";
+import {
+  fullName,
+  getInitials,
+  getAvatarColor,
+  STATUS_STYLES,
+} from "../utils/common";
 
 const Avatar = ({ name = "", size = 22 }) => (
   <div
@@ -20,10 +26,13 @@ const StatusBadge = ({ status }) => {
     STATUS_STYLES[status] || {
       background: "#f3f4f6",
       color: "#6b7280",
-      border: "none",
     };
+
   return (
-    <span className="px-6 py-[2px] rounded-full text-xs font-medium whitespace-nowrap" style={s}>
+    <span
+      className="px-3 py-[2px] rounded-full text-xs font-medium whitespace-nowrap"
+      style={s}
+    >
       {status || "—"}
     </span>
   );
@@ -37,31 +46,26 @@ const Chevron = ({ open }) => (
     fill="none"
     className={`transition-transform ${open ? "rotate-90" : ""}`}
   >
-    <path d="M6 4l4 4-4 4" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round" />
+    <path
+      d="M6 4l4 4-4 4"
+      stroke="#6b7280"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
-const SectionLabel = ({ label, color, open, onToggle }) => (
-  <div onClick={onToggle} className="flex items-center gap-2 px-3 py-1 cursor-pointer">
-    <Chevron open={open} />
-    <span className="text-sm font-semibold" style={{ color }}>
-      {label}
-    </span>
-  </div>
-);
-
-const TH = ({ children }) => (
-  <th className="px-3 py-2 text-xs text-gray-500 font-semibold bg-gray-50 text-left">
-    {children}
-  </th>
-);
-
-const TD = ({ children }) => (
-  <td className="px-3 py-2 text-sm text-gray-700">{children}</td>
-);
-
-const ActionBtn = () => (
-  <button className="text-gray-400 text-lg px-1 hover:text-gray-600">⋮</button>
+/* ✅ FIXED ACTION BUTTON */
+const ActionBtn = ({ onClick }) => (
+  <button
+    onClick={(e) => {
+      e.stopPropagation(); // 🔥 IMPORTANT
+      onClick?.();
+    }}
+    className="text-gray-400 text-lg px-1 hover:text-gray-600 cursor-pointer"
+  >
+    ⋮
+  </button>
 );
 
 /* ================= TIMESHEET ================= */
@@ -72,37 +76,26 @@ const TimesheetSection = ({ timesheets = [] }) => {
 
   return (
     <div className="bg-yellow-50 rounded-md mt-1">
-      <SectionLabel
-        label="Timesheet (Hours Logged)"
-        color="#d97706"
-        open={open}
-        onToggle={() => setOpen((p) => !p)}
-      />
+      <div
+        onClick={() => setOpen((p) => !p)}
+        className="flex items-center gap-2 px-3 py-1 cursor-pointer"
+      >
+        <Chevron open={open} />
+        <span className="text-sm font-semibold text-yellow-700">
+          Timesheet
+        </span>
+      </div>
 
       {open && (
         <div className="pl-6 pb-2">
-          <table className="w-full">
-            <thead>
-              <tr>
-                <TH>Work Date</TH>
-                <TH>Remarks</TH>
-                <TH>Hours</TH>
-                <TH>Status</TH>
-                <TH>Actions</TH>
-              </tr>
-            </thead>
-            <tbody>
-              {timesheets.map((ts, i) => (
-                <tr key={i} className="hover:bg-yellow-100 rounded-md">
-                  <TD>{ts.workDate || "—"}</TD>
-                  <TD>{ts.remarks || "—"}</TD>
-                  <TD>{ts.hoursWorked || "—"}</TD>
-                  <TD><StatusBadge status={ts.approvalStatus} /></TD>
-                  <TD><ActionBtn /></TD>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {timesheets.map((ts, i) => (
+            <div key={i} className="flex justify-between py-1 text-sm">
+              <span>{ts.workDate}</span>
+              <span>{ts.hoursWorked}h</span>
+              <StatusBadge status={ts.approvalStatus} />
+              <ActionBtn />
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -117,57 +110,36 @@ const SubtaskSection = ({ subtasks = [] }) => {
 
   return (
     <div className="bg-blue-50 rounded-md mt-1">
-      <SectionLabel label="Subtasks" color="#3b82f6" open={open} onToggle={() => setOpen((p) => !p)} />
+      <div
+        onClick={() => setOpen((p) => !p)}
+        className="flex items-center gap-2 px-3 py-1 cursor-pointer"
+      >
+        <Chevron open={open} />
+        <span className="text-sm font-semibold text-blue-600">
+          Subtasks
+        </span>
+      </div>
 
-      {open && (
-        <div className="pl-6 pb-2">
-          <table className="w-full">
-            <thead>
-              <tr>
-                <TH>#</TH>
-                <TH>Subtask</TH>
-                <TH>Assignee</TH>
-                <TH>Start</TH>
-                <TH>Due</TH>
-                <TH>Status</TH>
-                <TH>Actions</TH>
-              </tr>
-            </thead>
+      {open &&
+        subtasks.map((st, i) => {
+          const name = fullName(st.assignee);
 
-            <tbody>
-              {subtasks.map((st, i) => {
-                const name = fullName(st.assignee);
-                return (
-                  <React.Fragment key={i}>
-                    <tr className="hover:bg-blue-100 rounded-md">
-                      <TD>{i + 1}</TD>
-                      <TD className="font-medium">{st.title}</TD>
-                      <TD>
-                        <div className="flex items-center gap-2">
-                          <Avatar name={name} />
-                          <span>{name}</span>
-                        </div>
-                      </TD>
-                      <TD>{st.startDate}</TD>
-                      <TD>{st.dueDate}</TD>
-                      <TD><StatusBadge status={st.status} /></TD>
-                      <TD><ActionBtn /></TD>
-                    </tr>
+          return (
+            <div key={i} className="pl-6 py-2">
+              <div className="flex justify-between items-center">
+                <span>{st.title}</span>
 
-                    {st.timesheets?.length > 0 && (
-                      <tr>
-                        <td colSpan={7}>
-                          <TimesheetSection timesheets={st.timesheets} />
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
+                <div className="flex items-center gap-2">
+                  <Avatar name={name} />
+                  <StatusBadge status={st.status} />
+                  <ActionBtn />
+                </div>
+              </div>
+
+              <TimesheetSection timesheets={st.timesheets} />
+            </div>
+          );
+        })}
     </div>
   );
 };
@@ -194,13 +166,14 @@ const TaskRow = ({ task, index }) => {
           <span>{name}</span>
         </div>
 
-        <span className="text-gray-500">{task.startDate}</span>
+        <span>{task.startDate}</span>
         <StatusBadge status={task.status} />
+
         <ActionBtn />
       </div>
 
       {open && (
-        <div className="pl-4 mt-1">
+        <div className="pl-4">
           <SubtaskSection subtasks={task.subtasks} />
           <TimesheetSection timesheets={task.timesheets} />
         </div>
@@ -215,47 +188,39 @@ const TaskSection = ({ tasks = [] }) => {
 
   return (
     <div className="bg-gray-50 rounded-md mt-2">
-      <SectionLabel label="Tasks" color="#3b82f6" open={open} onToggle={() => setOpen(!open)} />
+      <div
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-2 px-3 py-2 cursor-pointer"
+      >
+        <Chevron open={open} />
+        <span className="font-semibold text-blue-600">Tasks</span>
+      </div>
 
-      {open && (
-        <div className="pl-4">
-          <div className="grid grid-cols-[20px_30px_1fr_200px_120px_120px_80px] px-3 py-2 text-xs text-gray-400 uppercase">
-            <span />
-            <span>#</span>
-            <span>Task</span>
-            <span>Assignee</span>
-            <span>Start</span>
-            <span>Status</span>
-            <span>Actions</span>
-          </div>
-
-          {tasks.map((t, i) => (
-            <TaskRow key={i} task={t} index={i} />
-          ))}
-        </div>
-      )}
+      {open &&
+        tasks.map((t, i) => <TaskRow key={i} task={t} index={i} />)}
     </div>
   );
 };
 
 /* ================= MILESTONE ================= */
 
-const MilestoneRow = ({ milestone, index }) => {
+const MilestoneRow = ({ milestone, index, onEdit }) => {
   const [open, setOpen] = useState(true);
 
   return (
     <div className="rounded-xl mb-3 bg-white shadow-sm">
       <div
         onClick={() => setOpen(!open)}
-        className="grid grid-cols-[20px_30px_1fr_120px_120px_120px_80px] px-4 py-3 items-center hover:bg-gray-50 cursor-pointer rounded-t-xl"
+        className="grid grid-cols-[20px_30px_1fr_120px_120px_120px_80px] px-4 py-3 items-center hover:bg-gray-50 cursor-pointer"
       >
         <Chevron open={open} />
         <span className="text-gray-400">{index + 1}</span>
-        <span className="font-bold text-gray-800">{milestone.title}</span>
-        <span className="text-gray-500">{milestone.startDate}</span>
-        <span className="text-gray-500">{milestone.endDate}</span>
+        <span className="font-bold">{milestone.title}</span>
+        <span>{milestone.startDate}</span>
+        <span>{milestone.endDate}</span>
         <StatusBadge status={milestone.status} />
-        <ActionBtn />
+
+        <ActionBtn onClick={() => onEdit(milestone)} />
       </div>
 
       {open && <TaskSection tasks={milestone.tasks} />}
@@ -265,10 +230,23 @@ const MilestoneRow = ({ milestone, index }) => {
 
 /* ================= MAIN ================= */
 
-const ProjectTree = ({ milestones = [] }) => {
+const ProjectTree = ({ milestones = [], refetch }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editData, setEditData] = useState(null);
+
+  const openEdit = (milestone) => {
+    setEditData(milestone);
+    setModalOpen(true);
+  };
+
+  const onSuccess = () => {
+    setModalOpen(false);
+    refetch();
+  };
+
   if (!milestones.length) {
     return (
-      <div className="p-10 text-center text-gray-400 border border-dashed rounded-lg">
+      <div className="p-10 text-center text-gray-400 border rounded-lg">
         No data
       </div>
     );
@@ -276,6 +254,8 @@ const ProjectTree = ({ milestones = [] }) => {
 
   return (
     <div>
+
+      {/* ✅ ADDED HEADER (FIX) */}
       <div className="grid grid-cols-[20px_30px_1fr_120px_120px_120px_80px] px-4 py-2 text-xs text-gray-400 uppercase mb-2">
         <span />
         <span>#</span>
@@ -287,8 +267,20 @@ const ProjectTree = ({ milestones = [] }) => {
       </div>
 
       {milestones.map((m, i) => (
-        <MilestoneRow key={i} milestone={m} index={i} />
+        <MilestoneRow
+          key={i}
+          milestone={m}
+          index={i}
+          onEdit={openEdit}
+        />
       ))}
+
+      <MilestoneModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        editData={editData}
+        onSuccess={() => onSuccess()}
+      />
     </div>
   );
 };
