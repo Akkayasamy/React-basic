@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { MilestoneModal } from "../components/MilestoneModal";
-import { TaskModal } from "../components/TaskModal.jsx"; // ✅ FIX ADDED
+import { TaskModal } from "../components/TaskModal.jsx";
+import { SubtaskModal } from "./SubtaskModal.jsx";
+
 import {
   fullName,
   getInitials,
   getAvatarColor,
   STATUS_STYLES,
 } from "../utils/common";
-
 
 const Avatar = ({ name = "", size = 22 }) => (
   <div
@@ -30,8 +31,12 @@ const StatusBadge = ({ status }) => {
       color: "#6b7280",
       border: "none",
     };
+
   return (
-    <span className="px-6 py-[2px] rounded-full text-xs font-medium whitespace-nowrap" style={s}>
+    <span
+      className="px-6 py-[2px] rounded-full text-xs font-medium whitespace-nowrap"
+      style={s}
+    >
       {status || "—"}
     </span>
   );
@@ -127,8 +132,8 @@ const TimesheetSection = ({ timesheets = [] }) => {
 
 /* ================= SUBTASK ================= */
 
-const SubtaskSection = ({ subtasks = [] }) => {
-  const [open, setOpen] = useState(true);
+const SubtaskSection = ({ subtasks = [], onEditSubtask }) => {
+  const [open, setOpen] = useState(false);
   if (!subtasks.length) return null;
 
   return (
@@ -158,6 +163,7 @@ const SubtaskSection = ({ subtasks = [] }) => {
             <tbody>
               {subtasks.map((st, i) => {
                 const name = fullName(st.assignee);
+
                 return (
                   <React.Fragment key={i}>
                     <tr className="hover:bg-blue-100 rounded-md">
@@ -172,7 +178,9 @@ const SubtaskSection = ({ subtasks = [] }) => {
                       <TD>{st.startDate}</TD>
                       <TD>{st.dueDate}</TD>
                       <TD><StatusBadge status={st.status} /></TD>
-                      <TD><ActionBtn /></TD>
+                      <TD>
+                        <ActionBtn onClick={() => onEditSubtask?.(st)} />
+                      </TD>
                     </tr>
 
                     {st.timesheets?.length > 0 && (
@@ -195,7 +203,7 @@ const SubtaskSection = ({ subtasks = [] }) => {
 
 /* ================= TASK ================= */
 
-const TaskRow = ({ task, index, onEditTask }) => {
+const TaskRow = ({ task, index, onEditTask, onEditSubtask }) => {
   const [open, setOpen] = useState(false);
   const hasChild = task.subtasks?.length || task.timesheets?.length;
   const name = fullName(task.assignee);
@@ -217,12 +225,16 @@ const TaskRow = ({ task, index, onEditTask }) => {
 
         <span className="text-gray-500">{task.startDate}</span>
         <StatusBadge status={task.status} />
+
         <ActionBtn onClick={() => onEditTask(task)} />
       </div>
 
       {open && (
         <div className="pl-4 mt-1">
-          <SubtaskSection subtasks={task.subtasks} />
+          <SubtaskSection
+            subtasks={task.subtasks}
+            onEditSubtask={onEditSubtask}
+          />
           <TimesheetSection timesheets={task.timesheets} />
         </div>
       )}
@@ -230,8 +242,10 @@ const TaskRow = ({ task, index, onEditTask }) => {
   );
 };
 
-const TaskSection = ({ tasks = [], onEditTask }) => {
-  const [open, setOpen] = useState(true);
+/* ================= TASK SECTION ================= */
+
+const TaskSection = ({ tasks = [], onEditTask, onEditSubtask }) => {
+  const [open, setOpen] = useState(false);
   if (!tasks.length) return null;
 
   return (
@@ -261,6 +275,7 @@ const TaskSection = ({ tasks = [], onEditTask }) => {
               task={t}
               index={i}
               onEditTask={onEditTask}
+              onEditSubtask={onEditSubtask}
             />
           ))}
         </div>
@@ -269,20 +284,34 @@ const TaskSection = ({ tasks = [], onEditTask }) => {
   );
 };
 
+/* ================= MILESTONE ================= */
 
 const MilestoneRow = ({ milestone, index, onEdit, refetch }) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [taskEditData, setTaskEditData] = useState(null);
+
+  const [subtaskModalOpen, setSubtaskModalOpen] = useState(false);
+  const [subtaskEditData, setSubtaskEditData] = useState(null);
 
   const openEditTask = (task) => {
     setTaskEditData(task);
     setTaskModalOpen(true);
   };
 
+  const openEditSubtask = (st) => {
+    setSubtaskEditData(st);
+    setSubtaskModalOpen(true);
+  };
+
   const onTaskSuccess = () => {
     setTaskModalOpen(false);
+    refetch();
+  };
+
+  const onSubtaskSuccess = () => {
+    setSubtaskModalOpen(false);
     refetch();
   };
 
@@ -302,18 +331,32 @@ const MilestoneRow = ({ milestone, index, onEdit, refetch }) => {
         <ActionBtn onClick={() => onEdit(milestone)} />
       </div>
 
-      {open && <TaskSection tasks={milestone.tasks} onEditTask={openEditTask} />}
-      {/* ✅ TASK MODAL FIX */}
+      {open && (
+        <TaskSection
+          tasks={milestone.tasks}
+          onEditTask={openEditTask}
+          onEditSubtask={openEditSubtask}
+        />
+      )}
+
       <TaskModal
         isOpen={taskModalOpen}
         onClose={() => setTaskModalOpen(false)}
         editData={taskEditData}
         onSuccess={onTaskSuccess}
       />
+
+      <SubtaskModal
+        isOpen={subtaskModalOpen}
+        onClose={() => setSubtaskModalOpen(false)}
+        editData={subtaskEditData}
+        onSuccess={onSubtaskSuccess}
+      />
     </div>
   );
 };
 
+/* ================= PROJECT TREE ================= */
 
 const ProjectTree = ({ milestones = [], refetch }) => {
   const [modalOpen, setModalOpen] = useState(false);

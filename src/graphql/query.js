@@ -420,95 +420,108 @@ export const GET_DASHBOARD_DATA = gql`
 `;
 
 export const GET_ALL_PROJECTS_TREE = gql`
-  query GetAllProjects($search: String, $currentPage: Int) {
-    getAllProjects(search: $search, currentPage: $currentPage) {
+ query GetAllProjects($search: String, $currentPage: Int) {
+  getAllProjects(search: $search, currentPage: $currentPage) {
+    status
+    errorMessage
+    totalCount
+    currentPage
+    totalPages
+    results {
+      id
+      title
+      projectname
+      projectcode
+      startdate
+      enddate
+      budgethours
       status
-      errorMessage
-      totalCount
-      currentPage
-      totalPages
-      results {
+      project_managerid
+      remarks
+      manager {
+        name
+        __typename
+      }
+      milestones {
         id
         title
-        projectname
-        projectcode
-        startdate
-        enddate
-        budgethours
+        startDate
+        endDate
         status
-        project_managerid
-        remarks
-        manager {
-          name
-          __typename
+        milestoneName
+        milestoneOwner
+        project {
+          id
+          projectname
+          projectcode
         }
-        milestones {
+        owner {
           id
+          first_name
+          last_name
+        }
+        tasks {
+          id
+          taskCode
           title
-          startDate
-          endDate
+          taskName
           status
-          milestoneName
-          milestoneOwner
+          priority
+          startDate
+          dueDate
           project {
-           id
-           projectname
-           projectcode
-         }
-        owner{
-          id
-					first_name
-					last_name
-				 }
-          tasks {
             id
-            taskCode
+            projectname
+          }
+          assignee {
+            id
+            first_name
+            last_name
+          }
+          milestone {
+            id
+            milestoneName
+          }
+          timesheets {
+            id
+            workDate
+            remarks
+            hoursWorked
+            approvalStatus
+            __typename
+          }
+          subtasks {
+            id
             title
-            taskName
+            subTaskName
             status
-            priority
             startDate
             dueDate
-             project {
-              id
-              projectname
-            }
+            estimatedHours
+            actualHours
             assignee {
               id
               first_name
               last_name
+              __typename
+            }
+            task {
+              id
+              title
+              taskCode
+            }
+            project {
+              title
             }
             milestone {
-               id
-               milestoneName
-             }
+              title
+            }
             timesheets {
               id
               workDate
               remarks
               hoursWorked
               approvalStatus
-              __typename
-            }
-            subtasks {
-              id
-              title
-              assignee {
-                first_name
-                last_name
-                __typename
-              }
-              startDate
-              dueDate
-              status
-              timesheets {
-                id
-                workDate
-                remarks
-                hoursWorked
-                approvalStatus
-              }
-              __typename
             }
             __typename
           }
@@ -518,5 +531,6 @@ export const GET_ALL_PROJECTS_TREE = gql`
       }
       __typename
     }
+    __typename
   }
-`;
+}`;
