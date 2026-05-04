@@ -55,7 +55,7 @@ export async function saveProject(variables) {
 
 export const fetchProjectsAPI = async (search = "", currentPage = 1) => {
   try {
-     const token = getToken();
+    const token = getToken();
     const res = await fetch(GQL_ENDPOINT, {
       method: "POST",
       headers: {
@@ -118,13 +118,19 @@ export const useProjects = (skip = false) => {
   };
 };
 
-export const useProjectTree = (skip = false) => {
-  const { data, loading, error } = useQuery(GET_ALL_PROJECTS_TREE, { skip });
+export const useProjectTree = ({ search = "", currentPage = 1 } = {}) => {
+  const { data, loading, error } = useQuery(GET_ALL_PROJECTS_TREE, {
+    variables: { search: search || undefined, currentPage },
+    fetchPolicy: "cache-and-network",
+  });
 
   return {
     status: data?.getAllProjects?.status,
     data: data?.getAllProjects?.results,
     errorMessage: data?.getAllProjects?.errorMessage,
+    totalCount: data?.getAllProjects?.totalCount,
+    totalPages: data?.getAllProjects?.totalPages,
+    currentPage: data?.getAllProjects?.currentPage,
     loading,
     error,
   };

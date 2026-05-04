@@ -449,6 +449,7 @@ export const GET_ALL_PROJECTS_TREE = gql`
           endDate
           status
           owner{
+          id
 					first_name
 					last_name
 				 }
@@ -456,6 +457,7 @@ export const GET_ALL_PROJECTS_TREE = gql`
             id
             title
             assignee {
+              id
               first_name
               last_name
             }
