@@ -1,102 +1,104 @@
 import React, { useState } from "react";
-import { AVATAR_COLORS, STATUS_STYLES, fullName, getInitials, getAvatarColor } from "../utils/common";
+import { fullName, getInitials, getAvatarColor, STATUS_STYLES } from "../utils/common";
 
 const Avatar = ({ name = "", size = 22 }) => (
-  <div style={{
-    width: size, height: size, borderRadius: "50%",
-    background: getAvatarColor(name), color: "#fff",
-    display: "flex", alignItems: "center", justifyContent: "center",
-    fontSize: size * 0.38, fontWeight: 600, flexShrink: 0,
-  }}>
+  <div
+    className="rounded-full flex items-center justify-center text-white font-semibold shrink-0"
+    style={{
+      width: size,
+      height: size,
+      background: getAvatarColor(name),
+      fontSize: size * 0.38,
+    }}
+  >
     {getInitials(name)}
   </div>
 );
 
 const StatusBadge = ({ status }) => {
-  const s = STATUS_STYLES[status] || { background: "#f3f4f6", color: "#6b7280", border: "1px solid #e5e7eb" };
+  const s =
+    STATUS_STYLES[status] || {
+      background: "#f3f4f6",
+      color: "#6b7280",
+      border: "none",
+    };
   return (
-    <span style={{ ...s, padding: "2px 38px", borderRadius: 999, fontSize: 12, fontWeight: 500, whiteSpace: "nowrap" }}>
+    <span className="px-6 py-[2px] rounded-full text-xs font-medium whitespace-nowrap" style={s}>
       {status || "—"}
     </span>
   );
 };
 
-const ProgressBar = ({ value = 0 }) => (
-  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-    <div style={{ width: 100, height: 7, background: "#e5e7eb", borderRadius: 999, overflow: "hidden" }}>
-      <div style={{ width: `${Math.min(100, Math.max(0, value))}%`, height: "100%", background: "#22c55e", borderRadius: 999 }} />
-    </div>
-    <span style={{ fontSize: 12, color: "#374151", minWidth: 32 }}>{value}%</span>
-  </div>
-);
-
 const Chevron = ({ open }) => (
-  <svg width={14} height={14} viewBox="0 0 16 16" fill="none"
-    style={{ transform: open ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s", flexShrink: 0 }}>
-    <path d="M6 4l4 4-4 4" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  <svg
+    width={14}
+    height={14}
+    viewBox="0 0 16 16"
+    fill="none"
+    className={`transition-transform ${open ? "rotate-90" : ""}`}
+  >
+    <path d="M6 4l4 4-4 4" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round" />
   </svg>
 );
 
 const SectionLabel = ({ label, color, open, onToggle }) => (
-  <div onClick={onToggle} style={{
-    display: "flex", alignItems: "center", gap: 6,
-    padding: "5px 12px", cursor: "pointer", userSelect: "none",
-  }}>
+  <div onClick={onToggle} className="flex items-center gap-2 px-3 py-1 cursor-pointer">
     <Chevron open={open} />
-    <span style={{ fontSize: 13, fontWeight: 600, color }}>{label}</span>
+    <span className="text-sm font-semibold" style={{ color }}>
+      {label}
+    </span>
   </div>
 );
 
-const TH = ({ children, style = {} }) => (
-  <th style={{
-    padding: "7px 12px", textAlign: "left", fontWeight: 600,
-    fontSize: 12, color: "#374151", borderBottom: "1px solid #e5e7eb",
-    background: "#f9fafb", whiteSpace: "nowrap", ...style,
-  }}>
+const TH = ({ children }) => (
+  <th className="px-3 py-2 text-xs text-gray-500 font-semibold bg-gray-50 text-left">
     {children}
   </th>
 );
 
-const TD = ({ children, style = {} }) => (
-  <td style={{ padding: "8px 12px", fontSize: 13, color: "#374151", verticalAlign: "middle", ...style }}>
-    {children}
-  </td>
+const TD = ({ children }) => (
+  <td className="px-3 py-2 text-sm text-gray-700">{children}</td>
 );
+
+const ActionBtn = () => (
+  <button className="text-gray-400 text-lg px-1 hover:text-gray-600">⋮</button>
+);
+
+/* ================= TIMESHEET ================= */
 
 const TimesheetSection = ({ timesheets = [] }) => {
   const [open, setOpen] = useState(false);
   if (!timesheets.length) return null;
 
   return (
-    <div style={{ background: "#fffdf5" }}>
+    <div className="bg-yellow-50 rounded-md mt-1">
       <SectionLabel
         label="Timesheet (Hours Logged)"
         color="#d97706"
         open={open}
         onToggle={() => setOpen((p) => !p)}
       />
+
       {open && (
-        <div style={{ paddingLeft: 24, paddingBottom: 8 }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <div className="pl-6 pb-2">
+          <table className="w-full">
             <thead>
               <tr>
                 <TH>Work Date</TH>
                 <TH>Remarks</TH>
-                <TH>Hours Worked</TH>
-                <TH>Approval Status</TH>
+                <TH>Hours</TH>
+                <TH>Status</TH>
+                <TH>Actions</TH>
               </tr>
             </thead>
             <tbody>
               {timesheets.map((ts, i) => (
-                <tr
-                  key={ts.id || i}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#fef3c7")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                >
+                <tr key={i} className="hover:bg-yellow-100 rounded-md">
                   <TD>{ts.workDate || "—"}</TD>
                   <TD>{ts.remarks || "—"}</TD>
-                  <TD>{ts.hoursWorked != null ? Number(ts.hoursWorked).toFixed(2) : "—"}</TD>
+                  <TD>{ts.hoursWorked || "—"}</TD>
                   <TD><StatusBadge status={ts.approvalStatus} /></TD>
+                  <TD><ActionBtn /></TD>
                 </tr>
               ))}
             </tbody>
@@ -107,54 +109,54 @@ const TimesheetSection = ({ timesheets = [] }) => {
   );
 };
 
-// ─── Subtasks ────────────────────────────────────────────────────────────────
-// Fields: id, title, assignee{first_name, last_name}, startDate, dueDate, status, timesheets
+/* ================= SUBTASK ================= */
 
 const SubtaskSection = ({ subtasks = [] }) => {
   const [open, setOpen] = useState(true);
   if (!subtasks.length) return null;
 
   return (
-    <div style={{ background: "#f8faff" }}>
+    <div className="bg-blue-50 rounded-md mt-1">
       <SectionLabel label="Subtasks" color="#3b82f6" open={open} onToggle={() => setOpen((p) => !p)} />
+
       {open && (
-        <div style={{ paddingLeft: 24, paddingBottom: 4 }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <div className="pl-6 pb-2">
+          <table className="w-full">
             <thead>
               <tr>
-                <TH style={{ width: 32 }}>#</TH>
+                <TH>#</TH>
                 <TH>Subtask</TH>
                 <TH>Assignee</TH>
-                <TH>Start Date</TH>
-                <TH>Due Date</TH>
+                <TH>Start</TH>
+                <TH>Due</TH>
                 <TH>Status</TH>
+                <TH>Actions</TH>
               </tr>
             </thead>
+
             <tbody>
               {subtasks.map((st, i) => {
                 const name = fullName(st.assignee);
                 return (
-                  <React.Fragment key={st.id || i}>
-                    <tr
-                      onMouseEnter={(e) => (e.currentTarget.style.background = "#eff6ff")}
-                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                    >
-                      <TD style={{ color: "#9ca3af" }}>{i + 1}</TD>
-                      <TD style={{ fontWeight: 500 }}>{st.title || "—"}</TD>
+                  <React.Fragment key={i}>
+                    <tr className="hover:bg-blue-100 rounded-md">
+                      <TD>{i + 1}</TD>
+                      <TD className="font-medium">{st.title}</TD>
                       <TD>
-                        <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                        <div className="flex items-center gap-2">
                           <Avatar name={name} />
-                          <span style={{ fontSize: 12 }}>{name || "—"}</span>
+                          <span>{name}</span>
                         </div>
                       </TD>
-                      <TD style={{ color: "#6b7280", fontSize: 12 }}>{st.startDate || "—"}</TD>
-                      <TD style={{ color: "#6b7280", fontSize: 12 }}>{st.dueDate || "—"}</TD>
+                      <TD>{st.startDate}</TD>
+                      <TD>{st.dueDate}</TD>
                       <TD><StatusBadge status={st.status} /></TD>
+                      <TD><ActionBtn /></TD>
                     </tr>
-                    {/* Subtask timesheets */}
+
                     {st.timesheets?.length > 0 && (
                       <tr>
-                        <td colSpan={6} style={{ padding: 0 }}>
+                        <td colSpan={7}>
                           <TimesheetSection timesheets={st.timesheets} />
                         </td>
                       </tr>
@@ -170,44 +172,37 @@ const SubtaskSection = ({ subtasks = [] }) => {
   );
 };
 
-// ─── Tasks ───────────────────────────────────────────────────────────────────
-// Fields: id, title, assignee{first_name, last_name}, startDate, status, timesheets, subtasks
+/* ================= TASK ================= */
 
 const TaskRow = ({ task, index }) => {
   const [open, setOpen] = useState(false);
-  const hasChildren = task.subtasks?.length > 0 || task.timesheets?.length > 0;
+  const hasChild = task.subtasks?.length || task.timesheets?.length;
   const name = fullName(task.assignee);
 
   return (
-    <div style={{ borderBottom: "1px solid #f3f4f6" }}>
+    <div className="mb-1 rounded-md">
       <div
-        onClick={() => hasChildren && setOpen((p) => !p)}
-        style={{
-          display: "grid",
-          gridTemplateColumns: "20px 28px 1fr 200px 140px 140px",
-          alignItems: "center",
-          padding: "9px 12px",
-          cursor: hasChildren ? "pointer" : "default",
-          gap: 4,
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = "#f3f4f6")}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+        onClick={() => hasChild && setOpen(!open)}
+        className="grid grid-cols-[20px_30px_1fr_200px_120px_120px_80px] items-center px-3 py-2 hover:bg-gray-100 cursor-pointer rounded-md"
       >
-        <span>{hasChildren && <Chevron open={open} />}</span>
-        <span style={{ fontSize: 13, color: "#9ca3af" }}>{index + 1}</span>
-        <span style={{ fontSize: 13, fontWeight: 500, color: "#111827" }}>{task.title || "—"}</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+        <span>{hasChild && <Chevron open={open} />}</span>
+        <span className="text-gray-400">{index + 1}</span>
+        <span className="font-medium">{task.title}</span>
+
+        <div className="flex items-center gap-2">
           <Avatar name={name} />
-          <span style={{ fontSize: 12, color: "#374151" }}>{name || "—"}</span>
+          <span>{name}</span>
         </div>
-        <span style={{ fontSize: 12, color: "#6b7280" }}>{task.startDate || "—"}</span>
+
+        <span className="text-gray-500">{task.startDate}</span>
         <StatusBadge status={task.status} />
+        <ActionBtn />
       </div>
 
       {open && (
-        <div style={{ paddingLeft: 16, borderTop: "1px solid #f3f4f6" }}>
-          <SubtaskSection subtasks={task.subtasks || []} />
-          <TimesheetSection timesheets={task.timesheets || []} />
+        <div className="pl-4 mt-1">
+          <SubtaskSection subtasks={task.subtasks} />
+          <TimesheetSection timesheets={task.timesheets} />
         </div>
       )}
     </div>
@@ -219,25 +214,23 @@ const TaskSection = ({ tasks = [] }) => {
   if (!tasks.length) return null;
 
   return (
-    <div style={{ background: "#f9fafb" }}>
-      <SectionLabel label="Tasks" color="#3b82f6" open={open} onToggle={() => setOpen((p) => !p)} />
+    <div className="bg-gray-50 rounded-md mt-2">
+      <SectionLabel label="Tasks" color="#3b82f6" open={open} onToggle={() => setOpen(!open)} />
+
       {open && (
-        <div style={{ paddingLeft: 20, paddingBottom: 4 }}>
-          {/* Task column headers */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "20px 28px 1fr 200px 140px 140px",
-            padding: "6px 12px",
-            fontSize: 11, fontWeight: 700, color: "#9ca3af",
-            textTransform: "uppercase", letterSpacing: "0.05em",
-            borderBottom: "1px solid #e5e7eb", gap: 4,
-          }}>
-            <span /><span>#</span>
-            <span>Task</span><span>Assignee</span>
-            <span>Start Date</span><span>Status</span>
+        <div className="pl-4">
+          <div className="grid grid-cols-[20px_30px_1fr_200px_120px_120px_80px] px-3 py-2 text-xs text-gray-400 uppercase">
+            <span />
+            <span>#</span>
+            <span>Task</span>
+            <span>Assignee</span>
+            <span>Start</span>
+            <span>Status</span>
+            <span>Actions</span>
           </div>
-          {tasks.map((task, i) => (
-            <TaskRow key={task.id || i} task={task} index={i} />
+
+          {tasks.map((t, i) => (
+            <TaskRow key={i} task={t} index={i} />
           ))}
         </div>
       )}
@@ -245,79 +238,56 @@ const TaskSection = ({ tasks = [] }) => {
   );
 };
 
-// ─── Milestone ───────────────────────────────────────────────────────────────
-// Fields: id, title, startDate, endDate, status, tasks
+/* ================= MILESTONE ================= */
 
 const MilestoneRow = ({ milestone, index }) => {
   const [open, setOpen] = useState(true);
-  const hasTasks = milestone.tasks?.length > 0;
 
   return (
-    <div style={{
-      border: "1px solid #e5e7eb", borderRadius: 8,
-      marginBottom: 10, overflow: "hidden",
-      background: "#fff", boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-    }}>
+    <div className="rounded-xl mb-3 bg-white shadow-sm">
       <div
-        onClick={() => hasTasks && setOpen((p) => !p)}
-        style={{
-          display: "grid",
-          gridTemplateColumns: "20px 28px 1fr 140px 140px 140px 36px",
-          alignItems: "center",
-          padding: "11px 16px",
-          gap: 4,
-          cursor: hasTasks ? "pointer" : "default",
-          borderBottom: open && hasTasks ? "1px solid #e5e7eb" : "none",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = "#f9fafb")}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}
+        onClick={() => setOpen(!open)}
+        className="grid grid-cols-[20px_30px_1fr_120px_120px_120px_80px] px-4 py-3 items-center hover:bg-gray-50 cursor-pointer rounded-t-xl"
       >
-        <span>{hasTasks && <Chevron open={open} />}</span>
-        <span style={{ fontSize: 13, color: "#6b7280" }}>{index + 1}</span>
-        <span style={{ fontSize: 14, fontWeight: 700, color: "#111827" }}>{milestone.title || "—"}</span>
-        <span style={{ fontSize: 12, color: "#6b7280" }}>{milestone.startDate || "—"}</span>
-        <span style={{ fontSize: 12, color: "#6b7280" }}>{milestone.endDate || "—"}</span>
+        <Chevron open={open} />
+        <span className="text-gray-400">{index + 1}</span>
+        <span className="font-bold text-gray-800">{milestone.title}</span>
+        <span className="text-gray-500">{milestone.startDate}</span>
+        <span className="text-gray-500">{milestone.endDate}</span>
         <StatusBadge status={milestone.status} />
-        <button
-          onClick={(e) => e.stopPropagation()}
-          style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", fontSize: 20, lineHeight: 1, padding: "2px 4px" }}
-        >⋮</button>
+        <ActionBtn />
       </div>
 
-      {open && hasTasks && <TaskSection tasks={milestone.tasks} />}
+      {open && <TaskSection tasks={milestone.tasks} />}
     </div>
   );
 };
 
-// ─── ProjectTree (default export) ────────────────────────────────────────────
+/* ================= MAIN ================= */
 
 const ProjectTree = ({ milestones = [] }) => {
-  if (!milestones.length) return (
-    <div style={{ padding: 40, textAlign: "center", color: "#9ca3af", border: "1px dashed #e5e7eb", borderRadius: 8 }}>
-      No milestones found.
-    </div>
-  );
+  if (!milestones.length) {
+    return (
+      <div className="p-10 text-center text-gray-400 border border-dashed rounded-lg">
+        No data
+      </div>
+    );
+  }
 
   return (
     <div>
-      {/* Column headers */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "20px 28px 1fr 140px 140px 140px 36px",
-        padding: "6px 16px 8px",
-        gap: 4,
-        fontSize: 11, fontWeight: 700, color: "#9ca3af",
-        textTransform: "uppercase", letterSpacing: "0.05em",
-        borderBottom: "2px solid #e5e7eb", marginBottom: 8,
-      }}>
-        <span /><span>#</span>
+      <div className="grid grid-cols-[20px_30px_1fr_120px_120px_120px_80px] px-4 py-2 text-xs text-gray-400 uppercase mb-2">
+        <span />
+        <span>#</span>
         <span>Milestone</span>
-        <span>Start Date</span><span>Due Date</span>
-        <span>Status</span><span>Actions</span>
+        <span>Start</span>
+        <span>End</span>
+        <span>Status</span>
+        <span>Actions</span>
       </div>
 
       {milestones.map((m, i) => (
-        <MilestoneRow key={m.id || i} milestone={m} index={i} />
+        <MilestoneRow key={i} milestone={m} index={i} />
       ))}
     </div>
   );
