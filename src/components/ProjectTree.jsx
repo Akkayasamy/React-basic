@@ -380,8 +380,11 @@ const ProjectTree = ({ milestones = [], refetch }) => {
   }
 
   return (
-    <div>
-      <div className="grid grid-cols-[20px_30px_1fr_120px_120px_120px_80px] px-4 py-2 text-xs text-gray-400 uppercase mb-2">
+    <div className="rounded-xl mb-3 bg-white shadow-sm">
+      <div
+        // onClick={() => setOpen(!open)}
+        className="grid grid-cols-[20px_30px_1fr_120px_120px_120px_80px] px-4 py-3 items-center hover:bg-gray-50 cursor-pointer"
+      >
         <span />
         <span>#</span>
         <span>Milestone</span>

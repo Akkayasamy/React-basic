@@ -7,18 +7,26 @@ import Pagination from "../components/Pagination.jsx";
 const OverViewPage = () => {
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    // Track which project is currently expanded
+    const [expandedProjectId, setExpandedProjectId] = useState(null);
 
     const { data: projects, loading, errorMessage, totalPages, totalCount, refetch } =
         useProjectTree({ search, currentPage });
 
     const handleSearch = (val) => {
         setSearch(val);
-        setCurrentPage(1); // reset to page 1 on new search
+        setCurrentPage(1); 
+        setExpandedProjectId(null); // Reset expansion on search
     };
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
+        setExpandedProjectId(null); // Reset expansion on page change
         window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const toggleProject = (id) => {
+        setExpandedProjectId(prevId => (prevId === id ? null : id));
     };
 
     return (
@@ -65,63 +73,84 @@ const OverViewPage = () => {
                     </div>
                 )}
 
-                {/* ── Empty state ── */}
-                {!loading && !errorMessage && !projects?.length && (
-                    <div style={{
-                        padding: 60, textAlign: "center", color: "#9ca3af",
-                        border: "1px dashed #e5e7eb", borderRadius: 10, background: "#fff",
-                    }}>
-                        {search ? `No projects found for "${search}"` : "No projects found."}
-                    </div>
-                )}
-
                 {/* ── Project list ── */}
-                {!loading && projects?.map((project) => (
-                    <div key={project.id} style={{ marginBottom: 28 }}>
+                {!loading && projects?.map((project) => {
+                    const isExpanded = expandedProjectId === project.id;
+                    
+                    return (
+                        <div key={project.id} style={{ marginBottom: 12 }}>
+                            {/* Project Row / Header - Clickable */}
+                            <div 
+                                onClick={() => toggleProject(project.id)}
+                                style={{
+                                    background: "#fff",
+                                    borderRadius: isExpanded ? "10px 10px 0 0" : 10,
+                                    border: "1px solid #e5e7eb",
+                                    padding: "16px 20px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    cursor: "pointer",
+                                    transition: "all 0.2s ease",
+                                    boxShadow: "0 1px 3px rgba(0,0,0,0.02)",
+                                    borderBottom: isExpanded ? "1px solid #f1f5f9" : "1px solid #e5e7eb"
+                                }}
+                            >
+                                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                    {/* Small arrow indicator */}
+                                    <span style={{ 
+                                        transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)", 
+                                        transition: "transform 0.2s",
+                                        fontSize: 10,
+                                        color: "#9ca3af"
+                                    }}>▶</span>
+                                    
+                                    <h2 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: "#111827" }}>
+                                        {project.title || project.projectname}
+                                    </h2>
+                                    
+                                    {project.projectcode && (
+                                        <span style={{
+                                            fontSize: 10, background: "#eff6ff", color: "#3b82f6",
+                                            border: "1px solid #bfdbfe", borderRadius: 4,
+                                            padding: "1px 6px", fontWeight: 600,
+                                        }}>
+                                            {project.projectcode}
+                                        </span>
+                                    )}
+                                </div>
 
-                        <div style={{ marginBottom: 10 }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 2 }}>
-                                <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "#111827" }}>
-                                    {project.title || project.projectname}
-                                </h2>
-                                {project.projectcode && (
-                                    <span style={{
-                                        fontSize: 11, background: "#eff6ff", color: "#3b82f6",
-                                        border: "1px solid #bfdbfe", borderRadius: 4,
-                                        padding: "1px 7px", fontWeight: 600,
-                                    }}>
-                                        {project.projectcode}
-                                    </span>
-                                )}
-                                {project.manager?.name && (
-                                    <span style={{ fontSize: 12, color: "#9ca3af" }}>
-                                        · {project.manager.name}
-                                    </span>
-                                )}
+                                <div style={{ fontSize: 13, color: "#6b7280" }}>
+                                    {project.manager?.name || "No Manager"}
+                                </div>
                             </div>
-                            <p style={{ margin: 0, fontSize: 12, color: "#9ca3af" }}>
-                                Track project milestones and their progress.
-                            </p>
-                        </div>
 
-                        <div style={{
-                            background: "#fff", borderRadius: 10,
-                            border: "1px solid #e5e7eb", padding: "16px 20px",
-                            boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
-                        }}>
-                            <ProjectTree milestones={project.milestones || []} refetch={refetch} />
+                            {/* Collapsible Milestone Section */}
+                            {isExpanded && (
+                                <div style={{
+                                    background: "#fff",
+                                    borderRadius: "0 0 10px 10px",
+                                    border: "1px solid #e5e7eb",
+                                    borderTop: "none",
+                                    padding: "16px 20px",
+                                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                                }}>
+                                    <ProjectTree milestones={project.milestones || []} refetch={refetch} />
+                                </div>
+                            )}
                         </div>
-
-                    </div>
-                ))}
+                    );
+                })}
 
                 {/* ── Pagination ── */}
                 {!loading && (
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages ?? 1}
-                        onPageChange={handlePageChange}
-                    />
+                    <div style={{ marginTop: 24 }}>
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages ?? 1}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
                 )}
 
             </div>
