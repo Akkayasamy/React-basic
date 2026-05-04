@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client/react";
 import { GQL_ENDPOINT } from "../config";
 import { getToken } from "../utils/auth";
-import { GET_ALL_PROJECTS } from "./query";
+import { GET_ALL_PROJECTS, GET_ALL_PROJECTS_TREE } from "./query";
 
 export async function saveProject(variables) {
   const token = getToken();
@@ -108,6 +108,18 @@ export const fetchProjectsAPI = async (search = "", currentPage = 1) => {
 
 export const useProjects = (skip = false) => {
   const { data, loading, error } = useQuery(GET_ALL_PROJECTS, { skip });
+
+  return {
+    status: data?.getAllProjects?.status,
+    data: data?.getAllProjects?.results,
+    errorMessage: data?.getAllProjects?.errorMessage,
+    loading,
+    error,
+  };
+};
+
+export const useProjectTree = (skip = false) => {
+  const { data, loading, error } = useQuery(GET_ALL_PROJECTS_TREE, { skip });
 
   return {
     status: data?.getAllProjects?.status,

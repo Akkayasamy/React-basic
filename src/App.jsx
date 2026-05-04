@@ -10,6 +10,7 @@ import MilestonesPage from "./pages/MilestonesPage";
 import TasksPage from "./pages/TasksPage";
 import SubtasksPage from "./pages/SubtasksPage";
 import TimesheetsPage from "./pages/TimesheetsPage";
+import OverViewPage from "./pages/OverviewPage.jsx";
 
 import { useAuth } from "./context/AuthContext.";
 import { useUsers } from "./graphql/getUserQuery.js";
@@ -58,6 +59,10 @@ function App() {
             <Route
               path="/dashboard"
               element={isAuth ? <Dashboard /> : <Navigate to="/" />}
+            />
+             <Route
+              path="/overview"
+              element={isAuth ? <OverViewPage /> : <Navigate to="/" />}
             />
             <Route
               path="/projects"

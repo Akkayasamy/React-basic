@@ -418,3 +418,84 @@ export const GET_DASHBOARD_DATA = gql`
     }
   }
 `;
+
+export const GET_ALL_PROJECTS_TREE = gql`
+  query GetAllProjects($search: String, $currentPage: Int) {
+    getAllProjects(search: $search, currentPage: $currentPage) {
+      status
+      errorMessage
+      totalCount
+      currentPage
+      totalPages
+      results {
+        id
+        title
+        projectname
+        projectcode
+        startdate
+        enddate
+        budgethours
+        status
+        project_managerid
+        remarks
+        manager {
+          name
+          __typename
+        }
+        milestones {
+          id
+          title
+          startDate
+          endDate
+          status
+          owner{
+					first_name
+					last_name
+				 }
+          tasks {
+            id
+            title
+            assignee {
+              first_name
+              last_name
+            }
+            startDate
+            status
+            timesheets {
+              id
+              workDate
+              remarks
+              hoursWorked
+              approvalStatus
+              __typename
+            }
+            subtasks {
+              id
+              title
+              assignee {
+                first_name
+                last_name
+                __typename
+              }
+              startDate
+              dueDate
+              status
+              timesheets {
+                id
+                workDate
+                remarks
+                hoursWorked
+                approvalStatus
+              }
+              __typename
+            }
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+      __typename
+    }
+  }
+`;

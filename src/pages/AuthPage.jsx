@@ -93,7 +93,7 @@ export default function AuthPage() {
                 Welcome Back!
               </h2>
               <p className="text-[12px] text-gray-500 text-center mb-5">
-                Sign in to your ProManage account
+                Sign in to your NIJA Project Management account
               </p>
               <Login setActiveTab={setActiveTab} />
               <p className="text-center mt-4 text-[12px] text-gray-500">
