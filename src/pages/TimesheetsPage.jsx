@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TimesheetModal } from "../components/TimesheetModal.jsx";
 import { useTimesheets } from "../graphql/timesheetQuery.js";
 import { formatStatus, STATUS_COLORS } from "../utils/formatStatus.js";
+import Pagination from "../components/Pagination.jsx";
 
 export default function TimesheetsPage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -10,7 +11,7 @@ export default function TimesheetsPage() {
 
   // Fetching data using your pattern
   const { data, loading, refetch } = useTimesheets({ page, search: "" });
-  
+
   const entries = data?.getTimesheets?.results || [];
   const totalCount = data?.getTimesheets?.totalCount || 0;
   const totalPages = data?.getTimesheets?.totalPages || 1;
@@ -27,6 +28,11 @@ export default function TimesheetsPage() {
 
   const handleSuccess = () => {
     refetch();
+  };
+
+  const handlePageChange = (page) => {
+    setPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -72,8 +78,8 @@ export default function TimesheetsPage() {
                     <td className="py-3 px-4">{item.workDate}</td>
                     <td className="py-3 px-4">{item.employee?.first_name} {item.employee?.last_name}</td>
                     <td className="py-3 px-4">
-                        <div className="font-semibold text-slate-700">{item.task?.title}</div>
-                        <div className="text-[11px] text-slate-400">{item.subtask?.title || "No Subtask"}</div>
+                      <div className="font-semibold text-slate-700">{item.task?.title}</div>
+                      <div className="text-[11px] text-slate-400">{item.subtask?.title || "No Subtask"}</div>
                     </td>
                     <td className="py-3 px-4 italic">"{item.title}"</td>
                     <td className="py-3 px-4 font-bold text-sky-600">{item.hoursWorked}h</td>
@@ -99,13 +105,11 @@ export default function TimesheetsPage() {
             </tbody>
           </table>
 
-          <div className="px-5 py-4 bg-white border-t border-slate-100 flex justify-between items-center rounded-b-xl">
-            <span className="text-[12px] text-slate-400">Page {page} of {totalPages}</span>
-            <div className="flex gap-2">
-              <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="px-3 py-1 rounded border border-slate-200 text-xs disabled:opacity-50">Prev</button>
-              <button disabled={page >= totalPages} onClick={() => setPage(p => p + 1)} className="px-3 py-1 rounded border border-slate-200 text-xs disabled:opacity-50">Next</button>
-            </div>
-          </div>
+          {!loading && <Pagination
+            currentPage={page}
+            totalPages={totalPages ?? 1}
+            onPageChange={handlePageChange}
+          />}
         </div>
       )}
 

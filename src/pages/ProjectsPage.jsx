@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { ProjectModal } from "../components/ProjectModal";
 import { fetchProjectsAPI } from "../graphql/projectMutations";
 import { STATUS_COLORS, formatStatus } from "../utils/formatStatus";
+import Pagination from "../components/Pagination";
 
 export default function ProjectsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
   const [projects, setProjects] = useState([]);
-  
+
   // PAGINATION STATES
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -46,6 +47,13 @@ export default function ProjectsPage() {
   useEffect(() => {
     loadProjects(currentPage);
   }, [currentPage]);
+
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
@@ -123,28 +131,11 @@ export default function ProjectsPage() {
             </tbody>
           </table>
 
-          {/* PAGINATION CONTROLS */}
-          <div className="px-5 py-4 bg-white border-t border-slate-100 flex justify-between items-center rounded-b-xl">
-            <span className="text-[12px] text-slate-400">
-              Page {currentPage} of {totalPages}
-            </span>
-            <div className="flex gap-2">
-              <button
-                disabled={currentPage <= 1}
-                onClick={() => setCurrentPage((prev) => prev - 1)}
-                className="px-3 py-1.5 rounded border border-slate-200 text-[12px] bg-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition"
-              >
-                Prev
-              </button>
-              <button
-                disabled={currentPage >= totalPages}
-                onClick={() => setCurrentPage((prev) => prev + 1)}
-                className="px-3 py-1.5 rounded border border-slate-200 text-[12px] bg-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition"
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          {!loading && <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages ?? 1}
+            onPageChange={handlePageChange}
+          />}
         </div>
       )}
 

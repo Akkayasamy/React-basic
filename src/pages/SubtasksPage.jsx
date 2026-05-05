@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SubtaskModal } from "../components/SubtaskModal.jsx";
 import { useSubtasks } from "../graphql/subtaskQuery.js";
 import { formatStatus, STATUS_COLORS } from "../utils/formatStatus.js";
+import Pagination from "../components/Pagination.jsx";
 
 export default function SubtasksPage({ taskId }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -10,7 +11,7 @@ export default function SubtasksPage({ taskId }) {
 
   // Synchronized with the Milestones pattern
   const { data, loading, refetch } = useSubtasks({ taskId, page, search: "" });
-  
+
   const subtasks = data?.getSubtasks?.results || [];
   const totalCount = data?.getSubtasks?.totalCount || 0;
   const totalPages = Math.ceil(totalCount / 10);
@@ -29,9 +30,14 @@ export default function SubtasksPage({ taskId }) {
     refetch();
   };
 
+ const handlePageChange = (page) => {
+    setPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+ 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
-      
+
       {/* HEADER - Exact same style as Milestones */}
       <div className="flex justify-between items-center mb-7">
         <div>
@@ -98,7 +104,7 @@ export default function SubtasksPage({ taskId }) {
                     <td className="py-3 px-4 font-semibold">{st.subTaskName}</td>
                     <td className="py-3 px-4">{st.assignee?.first_name || "—"}</td>
                     <td className="py-3 px-4">
-                        {st.estimatedHours}h / <span className="font-semibold">{st.actualHours}h</span>
+                      {st.estimatedHours}h / <span className="font-semibold">{st.actualHours}h</span>
                     </td>
 
                     <td className="py-3 px-4">
@@ -127,28 +133,11 @@ export default function SubtasksPage({ taskId }) {
             </tbody>
           </table>
 
-          {/* PAGINATION FOOTER - Added to match functionality */}
-          <div className="px-5 py-4 bg-white border-t border-slate-100 flex justify-between items-center rounded-b-xl">
-            <span className="text-[12px] text-slate-400">
-              Page {page} of {totalPages || 1}
-            </span>
-            <div className="flex gap-2">
-              <button
-                disabled={page <= 1}
-                onClick={() => setPage(p => p - 1)}
-                className="px-3 py-1 rounded border border-slate-200 text-xs disabled:opacity-50 hover:bg-slate-50 transition"
-              >
-                Prev
-              </button>
-              <button
-                disabled={page >= totalPages}
-                onClick={() => setPage(p => p + 1)}
-                className="px-3 py-1 rounded border border-slate-200 text-xs disabled:opacity-50 hover:bg-slate-50 transition"
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          {!loading && <Pagination
+            currentPage={page}
+            totalPages={totalPages ?? 1}
+            onPageChange={handlePageChange}
+          />}
         </div>
       )}
 

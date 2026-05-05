@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MilestoneModal } from "../components/MilestoneModal";
 import { STATUS_COLORS, formatStatus } from "../utils/formatStatus";
 import { useMilestones } from "../graphql/milestoneMutations";
+import Pagination from "../components/Pagination";
 
 export default function MilestonesPage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -9,9 +10,9 @@ export default function MilestonesPage() {
 
   const [page, setPage] = useState(1);
 
-  const { data, loading, refetch ,totalCount} = useMilestones({ page, search: "" });
+  const { data, loading, refetch, totalCount } = useMilestones({ page, search: "" });
 
-  const milestones = data || []; 
+  const milestones = data || [];
   const totalPages = Math.ceil(totalCount / 10);
 
   const openCreate = () => {
@@ -26,6 +27,11 @@ export default function MilestonesPage() {
 
   const handleSuccess = () => {
     refetch();
+  };
+
+  const handlePageChange = (page) => {
+    setPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -127,28 +133,11 @@ export default function MilestonesPage() {
             </tbody>
           </table>
 
-          {/* FIX 4: Add Pagination Controls */}
-          <div className="px-5 py-4 bg-white border-t border-slate-100 flex justify-between items-center rounded-b-xl">
-            <span className="text-[12px] text-slate-400">
-              Page {page} of {totalPages || 1}
-            </span>
-            <div className="flex gap-2">
-              <button
-                disabled={page <= 1}
-                onClick={() => setPage((p) => p - 1)}
-                className="px-3 py-1.5 rounded border border-slate-200 text-[12px] bg-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
-              >
-                Prev
-              </button>
-              <button
-                disabled={page >= totalPages}
-                onClick={() => setPage((p) => p + 1)}
-                className="px-3 py-1.5 rounded border border-slate-200 text-[12px] bg-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          {!loading && <Pagination
+            currentPage={page}
+            totalPages={totalPages ?? 1}
+            onPageChange={handlePageChange}
+          />}
         </div>
       )}
 

@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { TaskModal } from "../components/TaskModal.jsx";
 import { formatStatus } from "../utils/formatStatus.js";
 import { useTasks } from "../graphql/taskQuery.js";
+import Pagination from "../components/Pagination.jsx";
 
 const PRIORITY_COLORS = {
   low: "bg-slate-100 text-slate-600",
@@ -42,7 +43,12 @@ export default function TasksPage() {
     setSearch(e.target.value);
     setPage(1);
   };
-  console.log(tasks, 'tasks')
+
+  const handlePageChange = (page) => {
+    setPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="p-6 min-h-screen bg-slate-50">
 
@@ -148,30 +154,12 @@ export default function TasksPage() {
             )}
           </tbody>
         </table>
-        {/* Pagination */}
-        <div className="px-5 py-4 bg-white border-t border-slate-100 flex justify-between items-center rounded-b-xl">
-          <span className="text-[12px] text-slate-400">
-            Page {page} of {totalPages || 1}
-          </span>
-          <div className="flex gap-2">
-            <button
-              disabled={page <= 1}
-              onClick={() => setPage(p => p - 1)}
-              className="px-3 py-1 rounded border border-slate-200 text-xs disabled:opacity-50 hover:bg-slate-50 transition"
-            >
-              Prev
-            </button>
-            <button
-              disabled={page >= totalPages}
-              onClick={() => setPage(p => p + 1)}
-              className="px-3 py-1 rounded border border-slate-200 text-xs disabled:opacity-50 hover:bg-slate-50 transition"
-            >
-              Next
-            </button>
-          </div>
-        </div>
 
-
+        {!loading && <Pagination
+          currentPage={page}
+          totalPages={totalPages ?? 1}
+          onPageChange={handlePageChange}
+        />}
       </div>
 
       <TaskModal
