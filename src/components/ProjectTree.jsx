@@ -52,8 +52,8 @@ const Chevron = ({ open, color = "#94a3b8" }) => (
 );
 
 const SectionLabel = ({ label, color, open, onToggle, bgColor }) => (
-  <div 
-    onClick={onToggle} 
+  <div
+    onClick={onToggle}
     className="flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors rounded-t-md"
     style={{ backgroundColor: bgColor }}
   >
@@ -116,12 +116,27 @@ const TimesheetSection = ({ timesheets = [], onEditTimesheet }) => {
             </thead>
             <tbody>
               {timesheets.map((ts, i) => (
-                <tr key={i} className="hover:bg-orange-100/40 transition-colors">
-                  <TD>{ts.workDate || "—"}</TD>
-                  <TD className="italic text-slate-500">{ts.remarks || ts.title || "—"}</TD>
-                  <TD className="font-semibold text-orange-700">{ts.hoursWorked || "0"}h</TD>
-                  <TD><StatusBadge status={ts.approvalStatus} /></TD>
-                  <TD><ActionBtn onClick={() => onEditTimesheet?.(ts)} /></TD>
+                <tr key={i} className="hover:bg-orange-200/60 transition-colors">
+
+                  <TD className="text-slate-900 font-medium">
+                    {ts.workDate || "—"}
+                  </TD>
+
+                  <TD className="text-slate-700">
+                    {ts.remarks || ts.title || "—"}
+                  </TD>
+
+                  <TD className="font-bold text-orange-900">
+                    {ts.hoursWorked || "0"}h
+                  </TD>
+
+                  <TD>
+                    <StatusBadge status={ts.approvalStatus} />
+                  </TD>
+                  <TD className="text-right">
+                    <ActionBtn onClick={() => onEditTimesheet?.(ts)} />
+                  </TD>
+
                 </tr>
               ))}
             </tbody>
@@ -151,40 +166,76 @@ const SubtaskSection = ({ subtasks = [], onEditSubtask, onEditTimesheet }) => {
       {open && (
         <div className="p-2 overflow-x-auto">
           <table className="w-full border-separate border-spacing-0">
+
+            {/* ✅ FIXED HEADER */}
             <thead>
               <tr>
-                <TH>#</TH>
-                <TH>Subtask</TH>
-                <TH>Assignee</TH>
-                <TH>Start</TH>
-                <TH>Due</TH>
-                <TH>Status</TH>
-                <TH>Actions</TH>
+                <th className="px-3 py-2 text-[12px] text-slate-700 font-semibold uppercase tracking-wide bg-slate-50 text-left border-b border-slate-200">#</th>
+                <th className="px-3 py-2 text-[12px] text-slate-700 font-semibold uppercase tracking-wide bg-slate-50 text-left border-b border-slate-200">Subtask</th>
+                <th className="px-3 py-2 text-[12px] text-slate-700 font-semibold uppercase tracking-wide bg-slate-50 text-left border-b border-slate-200">Assignee</th>
+                <th className="px-3 py-2 text-[12px] text-slate-700 font-semibold uppercase tracking-wide bg-slate-50 text-left border-b border-slate-200">Start</th>
+                <th className="px-3 py-2 text-[12px] text-slate-700 font-semibold uppercase tracking-wide bg-slate-50 text-left border-b border-slate-200">Due</th>
+                <th className="px-3 py-2 text-[12px] text-slate-700 font-semibold uppercase tracking-wide bg-slate-50 text-left border-b border-slate-200">Status</th>
+                <th className="px-3 py-2 text-[12px] text-slate-700 font-semibold uppercase tracking-wide bg-slate-50 text-left border-b border-slate-200 text-right">Actions</th>
               </tr>
             </thead>
+
             <tbody>
               {subtasks.map((st, i) => {
                 const name = fullName(st.assignee);
                 return (
                   <React.Fragment key={i}>
-                    <tr className="hover:bg-indigo-50/50 transition-colors group">
-                      <TD className="text-slate-400 font-mono text-xs">{i + 1}</TD>
-                      <TD className="font-semibold text-slate-700">{st.title}</TD>
-                      <TD>
+
+                    <tr className="hover:bg-indigo-50/60 transition-colors group">
+
+                      <td className="px-3 py-2 text-slate-500 font-mono text-xs border-b border-slate-100">
+                        {i + 1}
+                      </td>
+
+                      <td className="px-3 py-2 font-semibold text-slate-800 border-b border-slate-100">
+                        {st.title}
+                      </td>
+
+                      <td className="px-3 py-2 border-b border-slate-100">
                         <div className="flex items-center gap-2">
                           <Avatar name={name} size={22} />
-                          <span className="text-xs font-medium">{name}</span>
+                          <span className="text-xs font-medium text-slate-700">
+                            {name}
+                          </span>
                         </div>
-                      </TD>
-                      <TD className="text-xs">{st.startDate}</TD>
-                      <TD className="text-xs font-medium text-slate-500">{st.dueDate}</TD>
-                      <TD><StatusBadge status={st.status} /></TD>
-                      <TD><ActionBtn onClick={() => onEditSubtask?.(st)} /></TD>
+                      </td>
+
+                      <td className="px-3 py-2 border-b border-slate-100">
+                        <span className="text-[11px] font-medium text-slate-700 bg-slate-100 px-2 py-[2px] rounded-md">
+                          {st.startDate}
+                        </span>
+                      </td>
+
+                      <td className="px-3 py-2 border-b border-slate-100">
+                        <span className="text-[11px] font-medium text-slate-700 bg-slate-100 px-2 py-[2px] rounded-md">
+                          {st.dueDate}
+                        </span>
+                      </td>
+
+                      <td className="px-3 py-2 border-b border-slate-100">
+                        <StatusBadge status={st.status} />
+                      </td>
+
+                      <td className="px-3 py-2 border-b border-slate-100">
+                        <div className="flex justify-end">
+                          <ActionBtn onClick={() => onEditSubtask?.(st)} />
+                        </div>
+                      </td>
+
                     </tr>
+
                     {st.timesheets?.length > 0 && (
                       <tr>
                         <td colSpan={7} className="p-2 bg-white/50">
-                          <TimesheetSection timesheets={st.timesheets} onEditTimesheet={onEditTimesheet} />
+                          <TimesheetSection
+                            timesheets={st.timesheets}
+                            onEditTimesheet={onEditTimesheet}
+                          />
                         </td>
                       </tr>
                     )}
@@ -192,6 +243,7 @@ const SubtaskSection = ({ subtasks = [], onEditSubtask, onEditTimesheet }) => {
                 );
               })}
             </tbody>
+
           </table>
         </div>
       )}
@@ -221,8 +273,7 @@ const TaskRow = ({ task, index, onEditTask, onEditSubtask, onEditTimesheet }) =>
           <span className="text-xs font-semibold text-slate-600">{name}</span>
         </div>
 
-        <span className="text-xs text-slate-400 font-medium">{task.startDate}</span>
-        <div className="flex justify-start">
+        <span className="text-xs text-slate-600 font-medium">{task.startDate}</span>        <div className="flex justify-start">
           <StatusBadge status={task.status} />
         </div>
         <div className="flex justify-end">
@@ -241,7 +292,7 @@ const TaskRow = ({ task, index, onEditTask, onEditSubtask, onEditTimesheet }) =>
 };
 
 const TaskSection = ({ tasks = [], onEditTask, onEditSubtask, onEditTimesheet }) => {
-  const [open, setOpen] = useState(true); // Default open for better visibility
+  const [open, setOpen] = useState(true);
   if (!tasks.length) return null;
 
   return (
@@ -256,7 +307,7 @@ const TaskSection = ({ tasks = [], onEditTask, onEditSubtask, onEditTimesheet })
 
       {open && (
         <div className="p-3">
-          <div className="grid grid-cols-[30px_40px_1fr_180px_120px_130px_60px] px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
+          <div className="grid grid-cols-[40px_40px_1fr_120px_120px_140px_60px] px-5 py-3 mb-2 bg-slate-50 text-[12px] font-semibold uppercase tracking-wide text-slate-700 border-b border-slate-200">
             <span />
             <span>#</span>
             <span>Task Name</span>
@@ -286,7 +337,7 @@ const TaskSection = ({ tasks = [], onEditTask, onEditSubtask, onEditTimesheet })
 
 const MilestoneRow = ({ milestone, index, onEdit, refetch }) => {
   const [open, setOpen] = useState(false);
-  
+
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [taskEditData, setTaskEditData] = useState(null);
   const [subtaskModalOpen, setSubtaskModalOpen] = useState(false);
@@ -311,21 +362,26 @@ const MilestoneRow = ({ milestone, index, onEdit, refetch }) => {
         <Chevron open={open} color="#6366f1" />
         <span className="text-slate-300 font-mono">{index + 1}</span>
         <span className="font-extrabold text-slate-800 text-base">{milestone.title}</span>
-        <span className="text-xs font-bold text-slate-400 uppercase tracking-tighter italic">{milestone.startDate}</span>
-        <span className="text-xs font-bold text-slate-400 uppercase tracking-tighter italic">{milestone.endDate}</span>
+        <span className="text-xs font-semibold text-slate-700 tracking-normal">
+          {milestone.startDate}
+        </span>
+
+        <span className="text-xs font-semibold text-slate-700 tracking-normal">
+          {milestone.endDate}
+        </span>
         <div className="flex justify-start">
-            <StatusBadge status={milestone.status} />
+          <StatusBadge status={milestone.status} />
         </div>
         <div className="flex justify-end">
-            <ActionBtn onClick={() => onEdit(milestone)} />
+          <ActionBtn onClick={() => onEdit(milestone)} />
         </div>
       </div>
 
       {open && (
         <div className="p-4 bg-slate-50/50 border-t border-slate-100">
-          <TaskSection 
-            tasks={milestone.tasks} 
-            onEditTask={openEditTask} 
+          <TaskSection
+            tasks={milestone.tasks}
+            onEditTask={openEditTask}
             onEditSubtask={openEditSubtask}
             onEditTimesheet={openEditTimesheet}
           />
@@ -358,7 +414,8 @@ const ProjectTree = ({ milestones = [], refetch }) => {
 
   return (
     <div className="max-w-7xl mx-auto p-4">
-      <div className="grid grid-cols-[40px_40px_1fr_120px_120px_140px_60px] px-5 py-3 mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 border-b border-slate-100">
+      {/* ✅ ONLY THIS HEADER FIXED */}
+      <div className="grid grid-cols-[40px_40px_1fr_120px_120px_140px_60px] px-5 py-3 mb-2 bg-slate-50 text-[12px] font-semibold uppercase tracking-wide text-slate-700 border-b border-slate-200">
         <span />
         <span>#</span>
         <span>Milestone Name</span>

@@ -7,7 +7,6 @@ import Pagination from "../components/Pagination.jsx";
 const OverViewPage = () => {
     const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    // Track which project is currently expanded
     const [expandedProjectId, setExpandedProjectId] = useState(null);
 
     const { data: projects, loading, errorMessage, totalPages, totalCount, refetch } =
@@ -15,13 +14,13 @@ const OverViewPage = () => {
 
     const handleSearch = (val) => {
         setSearch(val);
-        setCurrentPage(1); 
-        setExpandedProjectId(null); // Reset expansion on search
+        setCurrentPage(1);
+        setExpandedProjectId(null);
     };
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
-        setExpandedProjectId(null); // Reset expansion on page change
+        setExpandedProjectId(null);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
@@ -30,20 +29,17 @@ const OverViewPage = () => {
     };
 
     return (
-        <div style={{ minHeight: "100vh", background: "#f1f5f9", fontFamily: "'Inter', 'Segoe UI', sans-serif", padding: 24 }}>
-            <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+        <div className="min-h-screen bg-slate-100 p-6 font-['Inter','Segoe_UI',sans-serif]">
+            <div className="max-w-[1400px] mx-auto">
 
                 {/* ── Page Header + Search ── */}
-                <div style={{
-                    display: "flex", alignItems: "flex-start", justifyContent: "space-between",
-                    marginBottom: 24, flexWrap: "wrap", gap: 12,
-                }}>
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
                     <div>
-                        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#111827" }}>
+                        <h1 className="m-0 text-[22px] font-bold text-gray-900">
                             Projects Overview
                         </h1>
                         {!loading && totalCount != null && (
-                            <p style={{ margin: "3px 0 0", fontSize: 12, color: "#9ca3af" }}>
+                            <p className="mt-[3px] mb-0 text-[12px] text-gray-400">
                                 {totalCount} project{totalCount !== 1 ? "s" : ""} found
                                 {search && ` for "${search}"`}
                             </p>
@@ -54,21 +50,15 @@ const OverViewPage = () => {
 
                 {/* ── Loading spinner ── */}
                 {loading && (
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "40vh", gap: 14 }}>
-                        <div style={{
-                            width: 32, height: 32,
-                            border: "3px solid #e5e7eb",
-                            borderTop: "3px solid #3b82f6",
-                            borderRadius: "50%",
-                            animation: "spin 0.8s linear infinite",
-                        }} />
-                        <span style={{ color: "#9ca3af", fontSize: 14 }}>Loading projects...</span>
+                    <div className="flex flex-col items-center justify-center h-[40vh] gap-[14px]">
+                        <div className="w-8 h-8 border-[3px] border-gray-200 border-t-blue-500 rounded-full animate-spin" />
+                        <span className="text-gray-400 text-sm">Loading projects...</span>
                     </div>
                 )}
 
                 {/* ── Error ── */}
                 {!loading && errorMessage && (
-                    <div style={{ padding: 16, background: "#fee2e2", color: "#dc2626", borderRadius: 8, fontSize: 14, marginBottom: 16 }}>
+                    <div className="p-4 bg-red-100 text-red-600 rounded-lg text-sm mb-4">
                         {errorMessage}
                     </div>
                 )}
@@ -78,63 +68,41 @@ const OverViewPage = () => {
                     const isExpanded = expandedProjectId === project.id;
                     
                     return (
-                        <div key={project.id} style={{ marginBottom: 12 }}>
+                        <div key={project.id} className="mb-3">
                             {/* Project Row / Header - Clickable */}
                             <div 
                                 onClick={() => toggleProject(project.id)}
-                                style={{
-                                    background: "#fff",
-                                    borderRadius: isExpanded ? "10px 10px 0 0" : 10,
-                                    border: "1px solid #e5e7eb",
-                                    padding: "16px 20px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "space-between",
-                                    cursor: "pointer",
-                                    transition: "all 0.2s ease",
-                                    boxShadow: "0 1px 3px rgba(0,0,0,0.02)",
-                                    borderBottom: isExpanded ? "1px solid #f1f5f9" : "1px solid #e5e7eb"
-                                }}
+                                className={`
+                                    bg-white px-5 py-4 flex items-center justify-between cursor-pointer transition-all duration-200 shadow-sm border border-gray-200
+                                    ${isExpanded ? "rounded-t-[10px] border-b-slate-50" : "rounded-[10px]"}
+                                `}
                             >
-                                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                <div className="flex items-center gap-3">
                                     {/* Small arrow indicator */}
-                                    <span style={{ 
-                                        transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)", 
-                                        transition: "transform 0.2s",
-                                        fontSize: 10,
-                                        color: "#9ca3af"
-                                    }}>▶</span>
+                                    <span className={`
+                                        text-[10px] text-gray-400 transition-transform duration-200
+                                        ${isExpanded ? "rotate-90" : "rotate-0"}
+                                    `}>▶</span>
                                     
-                                    <h2 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: "#111827" }}>
+                                    <h2 className="m-0 text-base font-semibold text-gray-900">
                                         {project.title || project.projectname}
                                     </h2>
                                     
                                     {project.projectcode && (
-                                        <span style={{
-                                            fontSize: 10, background: "#eff6ff", color: "#3b82f6",
-                                            border: "1px solid #bfdbfe", borderRadius: 4,
-                                            padding: "1px 6px", fontWeight: 600,
-                                        }}>
+                                        <span className="text-[10px] bg-blue-50 text-blue-500 border border-blue-200 rounded px-1.5 py-[1px] font-semibold">
                                             {project.projectcode}
                                         </span>
                                     )}
                                 </div>
 
-                                <div style={{ fontSize: 13, color: "#6b7280" }}>
+                                <div className="text-[13px] text-gray-500">
                                     {project.manager?.name || "No Manager"}
                                 </div>
                             </div>
 
                             {/* Collapsible Milestone Section */}
                             {isExpanded && (
-                                <div style={{
-                                    background: "#fff",
-                                    borderRadius: "0 0 10px 10px",
-                                    border: "1px solid #e5e7eb",
-                                    borderTop: "none",
-                                    padding: "16px 20px",
-                                    boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                                }}>
+                                <div className="bg-white px-5 py-4 border border-gray-200 border-t-0 rounded-b-[10px] shadow-md">
                                     <ProjectTree milestones={project.milestones || []} refetch={refetch} />
                                 </div>
                             )}
@@ -144,7 +112,7 @@ const OverViewPage = () => {
 
                 {/* ── Pagination ── */}
                 {!loading && (
-                    <div style={{ marginTop: 24 }}>
+                    <div className="mt-6">
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages ?? 1}
@@ -152,10 +120,7 @@ const OverViewPage = () => {
                         />
                     </div>
                 )}
-
             </div>
-
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
     );
 };
