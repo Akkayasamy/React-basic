@@ -10,14 +10,118 @@ export const getAvatarColor = (name = "") =>
     AVATAR_COLORS[(name.charCodeAt(0) || 0) % AVATAR_COLORS.length];
 
 export const STATUS_STYLES = {
-    todo: { background: "#f1f5f9", color: "#475569", border: "1px solid #e2e8f0" },
-    pending: { background: "#fff7ed", color: "#c2410c", border: "1px solid #ffedd5" },
-    in_progress: { background: "#eff6ff", color: "#1d4ed8", border: "1px solid #dbeafe" },
-    in_review: { background: "#faf5ff", color: "#7e22ce", border: "1px solid #f3e8ff" },
-    blocked: { background: "#fef2f2", color: "#b91c1c", border: "1px solid #fee2e2" },
-    on_hold: { background: "#fffbeb", color: "#b45309", border: "1px solid #fef3c7" },
-    done: { background: "#f0fdf4", color: "#15803d", border: "1px solid #dcfce7" },
-    completed: { background: "#f0fdf4", color: "#15803d", border: "1px solid #dcfce7" },
-    cancelled: { background: "#f8fafc", color: "#64748b", border: "1px solid #f1f5f9" },
-    delayed: { background: "#fff1f2", color: "#be123c", border: "1px solid #ffe4e6" },
+  /* ========= DEFAULT / TODO ========= */
+  todo: {
+    background: "#F4F4F5",
+    color: "#52525B",
+    border: "1px solid #E4E4E7",
+  },
+
+  /* ========= PROGRESS ========= */
+  in_progress: {
+    background: "#EEF2FF",
+    color: "#4338CA",
+    border: "1px solid #C7D2FE",
+  },
+
+  /* ========= REVIEW / REOPEN ========= */
+  in_review: {
+    background: "#F5F3FF",
+    color: "#6D28D9",
+    border: "1px solid #DDD6FE",
+  },
+
+  re_open: {
+    background: "#F5F3FF",
+    color: "#7C3AED",
+    border: "1px solid #DDD6FE",
+  },
+
+  resolved: {
+    background: "#ECFEFF",
+    color: "#0E7490",
+    border: "1px solid #A5F3FC",
+  },
+
+  /* ========= SUCCESS ========= */
+  done: {
+    background: "#ECFDF5",
+    color: "#047857",
+    border: "1px solid #A7F3D0",
+  },
+
+  completed: {
+    background: "#DCFCE7",
+    color: "#166534",
+    border: "1px solid #86EFAC",
+  },
+
+  approved: {
+    background: "#ECFDF5",
+    color: "#059669",
+    border: "1px solid #6EE7B7",
+  },
+
+  /* ========= WARNING / HOLD ========= */
+  pending: {
+    background: "#FFFBEB",
+    color: "#B45309",
+    border: "1px solid #FDE68A",
+  },
+
+  on_hold: {
+    background: "#FEF3C7",
+    color: "#92400E",
+    border: "1px solid #FCD34D",
+  },
+
+  hold: {
+    background: "#FEF3C7",
+    color: "#A16207",
+    border: "1px solid #FCD34D",
+  },
+
+  /* ========= ERROR / BLOCKED ========= */
+  blocked: {
+    background: "#FFF1F2",
+    color: "#BE123C",
+    border: "1px solid #FECDD3",
+  },
+
+  rejected: {
+    background: "#FFF1F2",
+    color: "#E11D48",
+    border: "1px solid #FDA4AF",
+  },
+
+  cancelled: {
+    background: "#F4F4F5",
+    color: "#71717A",
+    border: "1px solid #E4E4E7",
+  },
+
+  delayed: {
+    background: "#FFF1F2",
+    color: "#BE123C",
+    border: "1px solid #FDA4AF",
+  },
+
+  /* ========= PRIORITY ========= */
+  high: {
+    background: "#FEE2E2",
+    color: "#DC2626",
+    border: "1px solid #FCA5A5",
+  },
+
+  normal: {
+    background: "#EFF6FF",
+    color: "#2563EB",
+    border: "1px solid #BFDBFE",
+  },
+
+  low: {
+    background: "#F0FDF4",
+    color: "#16A34A",
+    border: "1px solid #BBF7D0",
+  },
 };

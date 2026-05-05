@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { MilestoneModal } from "../components/MilestoneModal";
 import { TaskModal } from "../components/TaskModal.jsx";
 import { SubtaskModal } from "./SubtaskModal.jsx";
-import { TimesheetModal } from "../components/TimesheetModal.jsx"; // New Import
+import { TimesheetModal } from "../components/TimesheetModal.jsx";
 
 import {
   fullName,
@@ -11,7 +11,7 @@ import {
   STATUS_STYLES
 } from "../utils/common";
 
-/* ================= COMPONENTS ================= */
+/* ================= SHARED UI COMPONENTS ================= */
 
 const Avatar = ({ name = "", size = 24 }) => (
   <div
@@ -184,10 +184,7 @@ const SubtaskSection = ({ subtasks = [], onEditSubtask, onEditTimesheet }) => {
                     {st.timesheets?.length > 0 && (
                       <tr>
                         <td colSpan={7} className="p-2 bg-white/50">
-                          <TimesheetSection 
-                            timesheets={st.timesheets} 
-                            onEditTimesheet={onEditTimesheet}
-                          />
+                          <TimesheetSection timesheets={st.timesheets} onEditTimesheet={onEditTimesheet} />
                         </td>
                       </tr>
                     )}
@@ -202,7 +199,7 @@ const SubtaskSection = ({ subtasks = [], onEditSubtask, onEditTimesheet }) => {
   );
 };
 
-/* ================= TASK ROW ================= */
+/* ================= TASK ROW & SECTION ================= */
 
 const TaskRow = ({ task, index, onEditTask, onEditSubtask, onEditTimesheet }) => {
   const [open, setOpen] = useState(false);
@@ -226,25 +223,59 @@ const TaskRow = ({ task, index, onEditTask, onEditSubtask, onEditTimesheet }) =>
 
         <span className="text-xs text-slate-400 font-medium">{task.startDate}</span>
         <div className="flex justify-start">
-            <StatusBadge status={task.status} />
+          <StatusBadge status={task.status} />
         </div>
-
         <div className="flex justify-end">
-            <ActionBtn onClick={() => onEditTask(task)} />
+          <ActionBtn onClick={() => onEditTask(task)} />
         </div>
       </div>
 
       {open && (
         <div className="px-4 pb-4 bg-slate-50/30 border-t border-slate-50">
-          <SubtaskSection 
-            subtasks={task.subtasks} 
-            onEditSubtask={onEditSubtask} 
-            onEditTimesheet={onEditTimesheet}
-          />
-          <TimesheetSection 
-            timesheets={task.timesheets} 
-            onEditTimesheet={onEditTimesheet}
-          />
+          <SubtaskSection subtasks={task.subtasks} onEditSubtask={onEditSubtask} onEditTimesheet={onEditTimesheet} />
+          <TimesheetSection timesheets={task.timesheets} onEditTimesheet={onEditTimesheet} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const TaskSection = ({ tasks = [], onEditTask, onEditSubtask, onEditTimesheet }) => {
+  const [open, setOpen] = useState(true); // Default open for better visibility
+  if (!tasks.length) return null;
+
+  return (
+    <div className="bg-gray-50/50 border border-gray-100 rounded-md mt-2 overflow-hidden shadow-sm">
+      <SectionLabel
+        label="Tasks"
+        color="#3b82f6"
+        bgColor="#eff6ff"
+        open={open}
+        onToggle={() => setOpen(!open)}
+      />
+
+      {open && (
+        <div className="p-3">
+          <div className="grid grid-cols-[30px_40px_1fr_180px_120px_130px_60px] px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
+            <span />
+            <span>#</span>
+            <span>Task Name</span>
+            <span>Assignee</span>
+            <span>Start Date</span>
+            <span>Status</span>
+            <span className="text-right">Actions</span>
+          </div>
+
+          {tasks.map((t, i) => (
+            <TaskRow
+              key={i}
+              task={t}
+              index={i}
+              onEditTask={onEditTask}
+              onEditSubtask={onEditSubtask}
+              onEditTimesheet={onEditTimesheet}
+            />
+          ))}
         </div>
       )}
     </div>
@@ -256,22 +287,17 @@ const TaskRow = ({ task, index, onEditTask, onEditSubtask, onEditTimesheet }) =>
 const MilestoneRow = ({ milestone, index, onEdit, refetch }) => {
   const [open, setOpen] = useState(false);
   
-  // Modal States
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [taskEditData, setTaskEditData] = useState(null);
-  
   const [subtaskModalOpen, setSubtaskModalOpen] = useState(false);
   const [subtaskEditData, setSubtaskEditData] = useState(null);
-
   const [tsModalOpen, setTsModalOpen] = useState(false);
   const [tsEditData, setTsEditData] = useState(null);
 
-  // Open Handlers
   const openEditTask = (task) => { setTaskEditData(task); setTaskModalOpen(true); };
   const openEditSubtask = (st) => { setSubtaskEditData(st); setSubtaskModalOpen(true); };
   const openEditTimesheet = (ts) => { setTsEditData(ts); setTsModalOpen(true); };
 
-  // Success Handlers
   const onTaskSuccess = () => { setTaskModalOpen(false); refetch(); };
   const onSubtaskSuccess = () => { setSubtaskModalOpen(false); refetch(); };
   const onTsSuccess = () => { setTsModalOpen(false); refetch(); };
@@ -297,24 +323,15 @@ const MilestoneRow = ({ milestone, index, onEdit, refetch }) => {
 
       {open && (
         <div className="p-4 bg-slate-50/50 border-t border-slate-100">
-          <div className="flex items-center gap-2 mb-3 px-1">
-             <div className="h-[2px] w-4 bg-indigo-500 rounded-full"></div>
-             <span className="text-[10px] font-black uppercase tracking-widest text-indigo-500">Task Breakdown</span>
-          </div>
-          {milestone.tasks?.map((t, i) => (
-            <TaskRow
-              key={i}
-              task={t}
-              index={i}
-              onEditTask={openEditTask}
-              onEditSubtask={openEditSubtask}
-              onEditTimesheet={openEditTimesheet}
-            />
-          ))}
+          <TaskSection 
+            tasks={milestone.tasks} 
+            onEditTask={openEditTask} 
+            onEditSubtask={openEditSubtask}
+            onEditTimesheet={openEditTimesheet}
+          />
         </div>
       )}
 
-      {/* Modals scoped to Milestone level for simplicity */}
       <TaskModal isOpen={taskModalOpen} onClose={() => setTaskModalOpen(false)} editData={taskEditData} onSuccess={onTaskSuccess} />
       <SubtaskModal isOpen={subtaskModalOpen} onClose={() => setSubtaskModalOpen(false)} editData={subtaskEditData} onSuccess={onSubtaskSuccess} />
       <TimesheetModal isOpen={tsModalOpen} onClose={() => setTsModalOpen(false)} editData={tsEditData} onSuccess={onTsSuccess} />
