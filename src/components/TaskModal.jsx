@@ -19,13 +19,14 @@ const EMPTY_FORM = {
     status: "todo",
 };
 
-const STATUS_OPTIONS = ['todo','in_progress','resolved','done','re_open','hold'];
+const STATUS_OPTIONS = ['todo', 'in_progress', 'resolved', 'done', 're_open', 'hold'];
 const PRIORITY_OPTIONS = ["low", "normal", "high"];
 
 const REQUIRED_FIELDS = [
     { key: "title", label: "Title" },
     { key: "taskName", label: "Task Name" },
     { key: "projectId", label: "Project" },
+    { key: "milestoneId", label: "Milestone" },
     { key: "assignedTo", label: "Assigned To" },
     { key: "startDate", label: "Start Date" },
     { key: "dueDate", label: "Due Date" },
@@ -202,7 +203,7 @@ export function TaskModal({ isOpen, onClose, editData, onSuccess }) {
                     {/* Milestone — only enabled after project selected */}
                     <div>
                         <label className="block text-[12px] font-semibold text-slate-500 mb-1">
-                            Milestone
+                            Milestone<span className="text-red-500">*</span>
                         </label>
                         <select
                             className={inputClass("milestoneId")}
@@ -215,7 +216,7 @@ export function TaskModal({ isOpen, onClose, editData, onSuccess }) {
                                     ? "Select a project first"
                                     : loadingMilestones
                                         ? "Loading..."
-                                        : "Select Milestone (optional)"}
+                                        : "Select Milestone"}
                             </option>
                             {!loadingMilestones &&
                                 milestones.map((m) => (
