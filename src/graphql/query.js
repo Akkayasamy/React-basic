@@ -420,7 +420,7 @@ export const GET_DASHBOARD_DATA = gql`
 `;
 
 export const GET_ALL_PROJECTS_TREE = gql`
- query GetAllProjects($search: String, $currentPage: Int) {
+query GetAllProjects($search: String, $currentPage: Int) {
   getAllProjects(search: $search, currentPage: $currentPage) {
     status
     errorMessage
@@ -439,8 +439,8 @@ export const GET_ALL_PROJECTS_TREE = gql`
       project_managerid
       remarks
       manager {
+        id
         name
-        __typename
       }
       milestones {
         id
@@ -483,12 +483,37 @@ export const GET_ALL_PROJECTS_TREE = gql`
             milestoneName
           }
           timesheets {
-            id
+            title
             workDate
             remarks
             hoursWorked
             approvalStatus
-            __typename
+            employee {
+              id
+              first_name
+              last_name
+              email
+            }
+            project {
+              id
+              title
+            }
+            milestone {
+              id
+              title
+            }
+            task {
+              id
+              title
+            }
+            subtask {
+              id
+              title
+            }
+            approver {
+              id
+              name
+            }
           }
           subtasks {
             id
@@ -503,7 +528,6 @@ export const GET_ALL_PROJECTS_TREE = gql`
               id
               first_name
               last_name
-              __typename
             }
             task {
               id
@@ -518,19 +542,41 @@ export const GET_ALL_PROJECTS_TREE = gql`
             }
             timesheets {
               id
+              title
               workDate
               remarks
               hoursWorked
               approvalStatus
+              employee {
+                id
+                first_name
+                last_name
+                email
+              }
+              project {
+                id
+                title
+              }
+              milestone {
+                id
+                title
+              }
+              task {
+                id
+                title
+              }
+              subtask {
+                id
+                title
+              }
+              approver {
+                id
+                name
+              }
             }
-            __typename
           }
-          __typename
         }
-        __typename
       }
-      __typename
     }
-    __typename
   }
 }`;

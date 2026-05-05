@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MilestoneModal } from "../components/MilestoneModal";
 import { TaskModal } from "../components/TaskModal.jsx";
 import { SubtaskModal } from "./SubtaskModal.jsx";
+import { TimesheetModal } from "../components/TimesheetModal.jsx"; // New Import
 
 import {
   fullName,
@@ -9,7 +10,6 @@ import {
   getAvatarColor,
   STATUS_STYLES
 } from "../utils/common";
-
 
 /* ================= COMPONENTS ================= */
 
@@ -86,9 +86,9 @@ const ActionBtn = ({ onClick }) => (
   </button>
 );
 
-/* ================= TIMESHEET ================= */
+/* ================= TIMESHEET SECTION ================= */
 
-const TimesheetSection = ({ timesheets = [] }) => {
+const TimesheetSection = ({ timesheets = [], onEditTimesheet }) => {
   const [open, setOpen] = useState(false);
   if (!timesheets.length) return null;
 
@@ -118,10 +118,10 @@ const TimesheetSection = ({ timesheets = [] }) => {
               {timesheets.map((ts, i) => (
                 <tr key={i} className="hover:bg-orange-100/40 transition-colors">
                   <TD>{ts.workDate || "—"}</TD>
-                  <TD className="italic text-slate-500">{ts.remarks || "—"}</TD>
-                  <TD className="font-semibold text-orange-700">{ts.hoursWorked || "0"}</TD>
+                  <TD className="italic text-slate-500">{ts.remarks || ts.title || "—"}</TD>
+                  <TD className="font-semibold text-orange-700">{ts.hoursWorked || "0"}h</TD>
                   <TD><StatusBadge status={ts.approvalStatus} /></TD>
-                  <TD><ActionBtn /></TD>
+                  <TD><ActionBtn onClick={() => onEditTimesheet?.(ts)} /></TD>
                 </tr>
               ))}
             </tbody>
@@ -132,9 +132,9 @@ const TimesheetSection = ({ timesheets = [] }) => {
   );
 };
 
-/* ================= SUBTASK ================= */
+/* ================= SUBTASK SECTION ================= */
 
-const SubtaskSection = ({ subtasks = [], onEditSubtask }) => {
+const SubtaskSection = ({ subtasks = [], onEditSubtask, onEditTimesheet }) => {
   const [open, setOpen] = useState(false);
   if (!subtasks.length) return null;
 
@@ -184,7 +184,10 @@ const SubtaskSection = ({ subtasks = [], onEditSubtask }) => {
                     {st.timesheets?.length > 0 && (
                       <tr>
                         <td colSpan={7} className="p-2 bg-white/50">
-                          <TimesheetSection timesheets={st.timesheets} />
+                          <TimesheetSection 
+                            timesheets={st.timesheets} 
+                            onEditTimesheet={onEditTimesheet}
+                          />
                         </td>
                       </tr>
                     )}
@@ -199,9 +202,9 @@ const SubtaskSection = ({ subtasks = [], onEditSubtask }) => {
   );
 };
 
-/* ================= TASK ================= */
+/* ================= TASK ROW ================= */
 
-const TaskRow = ({ task, index, onEditTask, onEditSubtask }) => {
+const TaskRow = ({ task, index, onEditTask, onEditSubtask, onEditTimesheet }) => {
   const [open, setOpen] = useState(false);
   const hasChild = task.subtasks?.length || task.timesheets?.length;
   const name = fullName(task.assignee);
@@ -233,27 +236,45 @@ const TaskRow = ({ task, index, onEditTask, onEditSubtask }) => {
 
       {open && (
         <div className="px-4 pb-4 bg-slate-50/30 border-t border-slate-50">
-          <SubtaskSection subtasks={task.subtasks} onEditSubtask={onEditSubtask} />
-          <TimesheetSection timesheets={task.timesheets} />
+          <SubtaskSection 
+            subtasks={task.subtasks} 
+            onEditSubtask={onEditSubtask} 
+            onEditTimesheet={onEditTimesheet}
+          />
+          <TimesheetSection 
+            timesheets={task.timesheets} 
+            onEditTimesheet={onEditTimesheet}
+          />
         </div>
       )}
     </div>
   );
 };
 
-/* ================= MILESTONE ================= */
+/* ================= MILESTONE ROW ================= */
 
 const MilestoneRow = ({ milestone, index, onEdit, refetch }) => {
   const [open, setOpen] = useState(false);
+  
+  // Modal States
   const [taskModalOpen, setTaskModalOpen] = useState(false);
   const [taskEditData, setTaskEditData] = useState(null);
+  
   const [subtaskModalOpen, setSubtaskModalOpen] = useState(false);
   const [subtaskEditData, setSubtaskEditData] = useState(null);
 
+  const [tsModalOpen, setTsModalOpen] = useState(false);
+  const [tsEditData, setTsEditData] = useState(null);
+
+  // Open Handlers
   const openEditTask = (task) => { setTaskEditData(task); setTaskModalOpen(true); };
   const openEditSubtask = (st) => { setSubtaskEditData(st); setSubtaskModalOpen(true); };
+  const openEditTimesheet = (ts) => { setTsEditData(ts); setTsModalOpen(true); };
+
+  // Success Handlers
   const onTaskSuccess = () => { setTaskModalOpen(false); refetch(); };
   const onSubtaskSuccess = () => { setSubtaskModalOpen(false); refetch(); };
+  const onTsSuccess = () => { setTsModalOpen(false); refetch(); };
 
   return (
     <div className="rounded-xl mb-4 bg-white border border-slate-200 shadow-md overflow-hidden transition-all duration-300">
@@ -287,18 +308,21 @@ const MilestoneRow = ({ milestone, index, onEdit, refetch }) => {
               index={i}
               onEditTask={openEditTask}
               onEditSubtask={openEditSubtask}
+              onEditTimesheet={openEditTimesheet}
             />
           ))}
         </div>
       )}
 
+      {/* Modals scoped to Milestone level for simplicity */}
       <TaskModal isOpen={taskModalOpen} onClose={() => setTaskModalOpen(false)} editData={taskEditData} onSuccess={onTaskSuccess} />
       <SubtaskModal isOpen={subtaskModalOpen} onClose={() => setSubtaskModalOpen(false)} editData={subtaskEditData} onSuccess={onSubtaskSuccess} />
+      <TimesheetModal isOpen={tsModalOpen} onClose={() => setTsModalOpen(false)} editData={tsEditData} onSuccess={onTsSuccess} />
     </div>
   );
 };
 
-/* ================= PROJECT TREE ================= */
+/* ================= PROJECT TREE MAIN ================= */
 
 const ProjectTree = ({ milestones = [], refetch }) => {
   const [modalOpen, setModalOpen] = useState(false);
