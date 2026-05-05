@@ -483,6 +483,7 @@ query GetAllProjects($search: String, $currentPage: Int) {
             milestoneName
           }
           timesheets {
+            id
             title
             workDate
             remarks
