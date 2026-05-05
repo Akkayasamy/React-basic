@@ -264,7 +264,7 @@ const TaskRow = ({ task, index, onEditTask, onEditSubtask, onEditTimesheet }) =>
         onClick={() => hasChild && setOpen(!open)}
         className="grid grid-cols-[30px_40px_1fr_180px_120px_130px_60px] items-center px-4 py-3 hover:bg-slate-50 cursor-pointer transition-all"
       >
-        <span>{hasChild && <Chevron open={open} />}</span>
+        <span>{hasChild ? <Chevron open={open} />:<></>}</span>
         <span className="text-slate-300 font-mono text-xs">{index + 1}</span>
         <span className="font-bold text-slate-700 text-sm tracking-tight">{task.title}</span>
 
@@ -293,7 +293,12 @@ const TaskRow = ({ task, index, onEditTask, onEditSubtask, onEditTimesheet }) =>
 
 const TaskSection = ({ tasks = [], onEditTask, onEditSubtask, onEditTimesheet }) => {
   const [open, setOpen] = useState(true);
-  if (!tasks.length) return null;
+  if (!tasks?.length) {
+    return (
+      <div className="p-4 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50 font-medium">
+        No tasks available for this milestone.      </div>
+    );
+  };
 
   return (
     <div className="bg-gray-50/50 border border-gray-100 rounded-md mt-2 overflow-hidden shadow-sm">
@@ -406,7 +411,7 @@ const ProjectTree = ({ milestones = [], refetch }) => {
 
   if (!milestones.length) {
     return (
-      <div className="p-16 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50 font-medium">
+      <div className="p-4 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50 font-medium">
         No project data found.
       </div>
     );
@@ -425,7 +430,7 @@ const ProjectTree = ({ milestones = [], refetch }) => {
         <span className="text-right">Actions</span>
       </div>
 
-      {milestones.map((m, i) => (
+      {milestones?.map((m, i) => (
         <MilestoneRow key={i} milestone={m} index={i} onEdit={openEdit} refetch={refetch} />
       ))}
 
