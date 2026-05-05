@@ -3,14 +3,18 @@ import { MilestoneModal } from "../components/MilestoneModal";
 import { STATUS_COLORS, formatStatus } from "../utils/formatStatus";
 import { useMilestones } from "../graphql/milestoneMutations";
 import Pagination from "../components/Pagination";
+import SearchBar from "../components/SearchBar";
 
 export default function MilestonesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
-
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const { data, loading, refetch, totalCount } = useMilestones({ page, search: "" });
+  const { data, loading, refetch, totalCount } = useMilestones({ 
+    page, 
+    search 
+  });
 
   const milestones = data || [];
   const totalPages = Math.ceil(totalCount / 10);
@@ -25,33 +29,48 @@ export default function MilestonesPage() {
     setModalOpen(true);
   };
 
+  const handleSearch = (val) => {
+    setSearch(val);
+    setPage(1); 
+  };
+
   const handleSuccess = () => {
     refetch();
   };
 
-  const handlePageChange = (page) => {
-    setPage(page);
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
-
-      {/* HEADER */}
-      <div className="flex justify-between items-center mb-7">
+      {/* HEADER WITH SEARCH */}
+      <div className="flex flex-wrap items-start justify-between gap-4 mb-7">
         <div>
-          <h1 className="text-2xl font-bold m-0">Milestones</h1>
-          <p className="text-[13px] text-slate-400 mt-1">
-            Manage all your milestones
-          </p>
+          <h1 className="text-2xl font-bold m-0 text-gray-900">Milestones</h1>
+          {!loading && totalCount != null ? (
+            <p className="text-[13px] text-slate-400 mt-1">
+              {totalCount} milestone{totalCount !== 1 ? "s" : ""} found
+              {search && ` for "${search}"`}
+            </p>
+          ) : (
+            <p className="text-[13px] text-slate-400 mt-1">
+              Manage all your milestones
+            </p>
+          )}
         </div>
 
-        <button
-          onClick={openCreate}
-          className="px-4 h-[38px] bg-sky-500 text-white border-0 rounded-lg text-[13px] font-semibold cursor-pointer flex items-center gap-1 whitespace-nowrap hover:bg-sky-600 transition"
-        >
-          + New Milestone
-        </button>
+        <div className="flex items-center gap-3">
+          <SearchBar value={search} onChange={handleSearch} />
+          
+          <button
+            onClick={openCreate}
+            className="px-4 h-[38px] bg-sky-500 text-white border-0 rounded-lg text-[13px] font-semibold cursor-pointer flex items-center gap-1 whitespace-nowrap hover:bg-sky-600 transition"
+          >
+            + New Milestone
+          </button>
+        </div>
       </div>
 
       {/* LOADING STATE */}
@@ -61,12 +80,13 @@ export default function MilestonesPage() {
         </div>
       ) : milestones.length === 0 ? (
         /* EMPTY STATE */
-        <div className="text-center py-24 px-4 text-slate-400">
+        <div className="text-center py-24 px-4 text-slate-400 bg-white rounded-xl border border-slate-200">
           <div className="text-[52px]">🏁</div>
-          <p className="font-semibold">No milestones yet</p>
+          <p className="font-semibold">No milestones found</p>
+          {search && <p className="text-sm">Try a different search term</p>}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           <table className="w-full border-collapse text-[13px]">
             <thead>
               <tr className="bg-slate-50">
@@ -117,7 +137,7 @@ export default function MilestonesPage() {
 
                     <td className="py-3 px-4">{m?.startDate || "—"}</td>
                     <td className="py-3 px-4">{m?.endDate || "—"}</td>
-                    <td className="py-3 px-4">{formatStatus(m?.owner?.first_name) || "—"}</td>
+                    <td className="py-3 px-4">{m?.owner?.first_name || "—"}</td>
 
                     <td className="py-3 px-4">
                       <button
@@ -133,11 +153,13 @@ export default function MilestonesPage() {
             </tbody>
           </table>
 
-          {!loading && <Pagination
-            currentPage={page}
-            totalPages={totalPages ?? 1}
-            onPageChange={handlePageChange}
-          />}
+          <div className="p-4 border-t border-slate-100">
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages ?? 1}
+              onPageChange={handlePageChange}
+            />
+          </div>
         </div>
       )}
 

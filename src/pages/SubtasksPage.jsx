@@ -3,14 +3,15 @@ import { SubtaskModal } from "../components/SubtaskModal.jsx";
 import { useSubtasks } from "../graphql/subtaskQuery.js";
 import { formatStatus, STATUS_COLORS } from "../utils/formatStatus.js";
 import Pagination from "../components/Pagination.jsx";
+import SearchBar from "../components/SearchBar.jsx"; // Ensure this import exists
 
 export default function SubtasksPage({ taskId }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
 
-  // Synchronized with the Milestones pattern
-  const { data, loading, refetch } = useSubtasks({ taskId, page, search: "" });
+  const { data, loading, refetch } = useSubtasks({ taskId, page, search: search });
 
   const subtasks = data?.getSubtasks?.results || [];
   const totalCount = data?.getSubtasks?.totalCount || 0;
@@ -26,33 +27,46 @@ export default function SubtasksPage({ taskId }) {
     setModalOpen(true);
   };
 
+  const handleSearch = (val) => {
+    setSearch(val);
+    setPage(1);
+  };
+
   const handleSuccess = () => {
     refetch();
   };
 
- const handlePageChange = (page) => {
+  const handlePageChange = (page) => {
     setPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
- 
+
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
-
-      {/* HEADER - Exact same style as Milestones */}
-      <div className="flex justify-between items-center mb-7">
+      <div className="flex flex-wrap items-start justify-between gap-4 mb-7">
         <div>
-          <h1 className="text-2xl font-bold m-0">Subtasks</h1>
-          <p className="text-[13px] text-slate-400 mt-1">
-            Manage all your subtasks
-          </p>
+          <h1 className="text-2xl font-bold m-0 text-gray-900">Subtasks</h1>
+          {!loading && totalCount != null ? (
+            <p className="text-[13px] text-slate-400 mt-1">
+              {totalCount} subtask{totalCount !== 1 ? "s" : ""} found
+              {search && ` for "${search}"`}
+            </p>
+          ) : (
+            <p className="text-[13px] text-slate-400 mt-1">
+              Manage all your subtasks
+            </p>
+          )}
         </div>
 
-        <button
-          onClick={openCreate}
-          className="px-4 h-[38px] bg-sky-500 text-white border-0 rounded-lg text-[13px] font-semibold cursor-pointer flex items-center gap-1 whitespace-nowrap hover:bg-sky-600 transition"
-        >
-          + New Subtask
-        </button>
+        <div className="flex items-center gap-3">
+          <SearchBar value={search} onChange={handleSearch} />
+          <button
+            onClick={openCreate}
+            className="px-4 h-[38px] bg-sky-500 text-white border-0 rounded-lg text-[13px] font-semibold cursor-pointer flex items-center gap-1 whitespace-nowrap hover:bg-sky-600 transition"
+          >
+            + New Subtask
+          </button>
+        </div>
       </div>
 
       {/* LOADING STATE */}
@@ -62,12 +76,13 @@ export default function SubtasksPage({ taskId }) {
         </div>
       ) : subtasks.length === 0 ? (
         /* EMPTY STATE */
-        <div className="text-center py-24 px-4 text-slate-400">
+        <div className="text-center py-24 px-4 text-slate-400 bg-white rounded-xl border border-slate-200">
           <div className="text-[52px]">📝</div>
-          <p className="font-semibold">No subtasks yet</p>
+          <p className="font-semibold">No subtasks found</p>
+          {search && <p className="text-sm">Try adjusting your search criteria</p>}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           <table className="w-full border-collapse text-[13px]">
             <thead>
               <tr className="bg-slate-50">
@@ -133,11 +148,13 @@ export default function SubtasksPage({ taskId }) {
             </tbody>
           </table>
 
-          {!loading && <Pagination
-            currentPage={page}
-            totalPages={totalPages ?? 1}
-            onPageChange={handlePageChange}
-          />}
+          <div className="p-4 border-t border-slate-100">
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages ?? 1}
+              onPageChange={handlePageChange}
+            />
+          </div>
         </div>
       )}
 

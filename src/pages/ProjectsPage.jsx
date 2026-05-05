@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { ProjectModal } from "../components/ProjectModal";
 import { fetchProjectsAPI } from "../graphql/projectMutations";
 import { STATUS_COLORS, formatStatus } from "../utils/formatStatus";
 import Pagination from "../components/Pagination";
+import SearchBar from "../components/SearchBar";
 
 export default function ProjectsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
   const [projects, setProjects] = useState([]);
-
-  // PAGINATION STATES
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0); // Added for the header stats
   const [loading, setLoading] = useState(false);
 
   const openCreate = () => {
@@ -24,54 +25,70 @@ export default function ProjectsPage() {
     setModalOpen(true);
   };
 
-  const loadProjects = async (page = currentPage) => {
+  // Fixed to accept and use the search term
+  const loadProjects = useCallback(async (page = currentPage, searchTerm = search) => {
     setLoading(true);
-    const data = await fetchProjectsAPI("", page);
+    const data = await fetchProjectsAPI(searchTerm, page);
 
     if (data?.status === 200) {
-      setProjects(data.results);
+      setProjects(data.results || []);
       setTotalPages(data.totalPages || 1);
       setCurrentPage(data.currentPage || 1);
+      setTotalCount(data.totalCount || 0);
     } else {
       console.error(data?.errorMessage || "Failed to load projects");
       setProjects([]);
+      setTotalCount(0);
     }
     setLoading(false);
+  }, [currentPage, search]);
+
+  const handleSearch = (val) => {
+    setSearch(val);
+    setCurrentPage(1);
   };
 
   const handleSuccess = () => {
-    loadProjects(currentPage);
+    loadProjects(currentPage, search);
   };
 
-  // Trigger reload when currentPage changes
   useEffect(() => {
-    loadProjects(currentPage);
-  }, [currentPage]);
-
+    loadProjects(currentPage, search);
+  }, [currentPage, search, loadProjects]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
-      {/* HEADER */}
-      <div className="flex justify-between items-center mb-7">
+      {/* HEADER - Integrated search bar layout */}
+      <div className="flex flex-wrap items-start justify-between gap-4 mb-7">
         <div>
-          <h1 className="text-2xl font-bold m-0">Projects</h1>
-          <p className="text-[13px] text-slate-400 mt-1">
-            Manage all your projects
-          </p>
+          <h1 className="text-2xl font-bold m-0 text-gray-900">Projects</h1>
+          {!loading && totalCount != null ? (
+            <p className="text-[13px] text-slate-400 mt-1">
+              {totalCount} project{totalCount !== 1 ? "s" : ""} found
+              {search && ` for "${search}"`}
+            </p>
+          ) : (
+            <p className="text-[13px] text-slate-400 mt-1">
+              Manage all your projects
+            </p>
+          )}
         </div>
 
-        <button
-          onClick={openCreate}
-          className="px-4 h-[38px] bg-sky-500 text-white border-0 rounded-lg text-[13px] font-semibold cursor-pointer flex items-center gap-1 whitespace-nowrap hover:bg-sky-600 transition"
-        >
-          + New Project
-        </button>
+        <div className="flex items-center gap-3">
+          <SearchBar value={search} onChange={handleSearch} />
+
+          <button
+            onClick={openCreate}
+            className="px-4 h-[38px] bg-sky-500 text-white border-0 rounded-lg text-[13px] font-semibold cursor-pointer flex items-center gap-1 whitespace-nowrap hover:bg-sky-600 transition"
+          >
+            + New Project
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -79,7 +96,7 @@ export default function ProjectsPage() {
       ) : projects.length === 0 ? (
         <div className="text-center py-24 px-4 text-slate-400">
           <div className="text-[52px]">📁</div>
-          <p className="font-semibold">No projects yet</p>
+          <p className="font-semibold">No projects found</p>
         </div>
       ) : (
         <div className="bg-white rounded-xl border border-slate-200">
@@ -131,11 +148,11 @@ export default function ProjectsPage() {
             </tbody>
           </table>
 
-          {!loading && <Pagination
+          <Pagination
             currentPage={currentPage}
             totalPages={totalPages ?? 1}
             onPageChange={handlePageChange}
-          />}
+          />
         </div>
       )}
 

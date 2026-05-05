@@ -4,7 +4,7 @@ import { TaskModal } from "../components/TaskModal.jsx";
 import { formatStatus } from "../utils/formatStatus.js";
 import { useTasks } from "../graphql/taskQuery.js";
 import Pagination from "../components/Pagination.jsx";
-
+import SearchBar from "../components/SearchBar.jsx";
 const PRIORITY_COLORS = {
   low: "bg-slate-100 text-slate-600",
   normal: "bg-blue-100 text-blue-700",
@@ -27,7 +27,7 @@ export default function TasksPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  const { data, loading, refetch } = useTasks({ page, search: '' });
+  const { data, loading, refetch } = useTasks({ page, search: search });
 
   const response = data?.getTasks;
   const tasks = response?.results || [];
@@ -39,8 +39,9 @@ export default function TasksPage() {
   const handleClose = () => { setModalOpen(false); setEditData(null); };
   const handleSuccess = () => refetch();
 
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
+  const handleSearch = (val) => {
+    const value = val?.target ? val.target.value : val;
+    setSearch(value);
     setPage(1);
   };
 
@@ -53,30 +54,25 @@ export default function TasksPage() {
     <div className="p-6 min-h-screen bg-slate-50">
 
       {/* Page Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Tasks</h1>
           <p className="text-[12px] text-slate-400 mt-0.5">
-            {totalCount} task{totalCount !== 1 ? "s" : ""} total
+            {totalCount} task{totalCount !== 1 ? "s" : ""} found
+            {search && ` for "${search}"`}
           </p>
         </div>
-        <button
-          onClick={openCreate}
-          className="px-4 py-2 rounded-lg text-[13px] font-semibold text-white bg-sky-600 hover:bg-sky-700 transition-colors shadow-sm cursor-pointer"
-        >
-          + New Task
-        </button>
-      </div>
 
-      {/* Search */}
-      {/* <div className="mb-4">
-        <input
-          className="w-full max-w-sm px-3 py-2 rounded-lg text-[13px] text-slate-900 border border-slate-200 bg-white outline-none focus:border-sky-400 transition-colors"
-          placeholder="Search tasks..."
-          value={search}
-          onChange={handleSearch}
-        />
-      </div> */}
+        <div className="flex items-center gap-3">
+          <SearchBar value={search} onChange={handleSearch} />
+          <button
+            onClick={openCreate}
+            className="px-4 py-2 h-[38px] rounded-lg text-[13px] font-semibold text-white bg-sky-600 hover:bg-sky-700 transition-colors shadow-sm cursor-pointer whitespace-nowrap"
+          >
+            + New Task
+          </button>
+        </div>
+      </div>
 
       {/* Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
