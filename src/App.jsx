@@ -18,6 +18,7 @@ import { UserProvider } from "./context/UserContext.jsx";
 
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
+import Help from "./pages/Help.jsx";
 
 function App() {
   const { isAuth } = useAuth();
@@ -60,7 +61,7 @@ function App() {
               path="/dashboard"
               element={isAuth ? <Dashboard /> : <Navigate to="/" />}
             />
-             <Route
+            <Route
               path="/overview"
               element={isAuth ? <OverViewPage /> : <Navigate to="/" />}
             />
@@ -83,6 +84,10 @@ function App() {
             <Route
               path="/timesheets"
               element={isAuth ? <TimesheetsPage /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/help"
+              element={<Help />}
             />
           </Routes>
         </div>

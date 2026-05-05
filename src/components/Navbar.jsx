@@ -56,7 +56,7 @@ export default function Navbar({ isOpen, setIsOpen }) {
             {data?.first_name}
           </span>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="6 9 12 15 18 9"/>
+            <polyline points="6 9 12 15 18 9" />
           </svg>
         </button>
 
@@ -72,10 +72,16 @@ export default function Navbar({ isOpen, setIsOpen }) {
             {[
               { label: "Profile", icon: "👤" },
               { label: "Settings", icon: "⚙️" },
-              { label: "Help", icon: "💬" },
+              { label: "Help", icon: "💬", link: "/help" },
             ].map((item) => (
               <button
                 key={item.label}
+                onClick={() => {
+                  const path = item.link || "#";
+                  if (path !== "#") {
+                    navigate(path);
+                  }
+                }}
                 className="flex items-center gap-2.5 w-full px-3 py-2 bg-transparent border-none rounded-lg cursor-pointer text-[13px] text-white/65 text-left hover:bg-white/[0.06] hover:text-white transition-colors"
               >
                 <span className="text-base">{item.icon}</span>
@@ -90,9 +96,9 @@ export default function Navbar({ isOpen, setIsOpen }) {
               className="flex items-center gap-2.5 w-full px-3 py-2 bg-transparent border-none rounded-lg cursor-pointer text-[13px] text-red-400 text-left hover:bg-red-500/10 transition-colors"
             >
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" y1="12" x2="9" y2="12"/>
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
               </svg>
               Sign out
             </button>
